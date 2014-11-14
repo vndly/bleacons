@@ -11,16 +11,20 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-public class BeaconService extends Service
+public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
 	private List<BeaconFilter> filters;
 	private List<BeaconListener> listeners;
-	
 	private BluetoothAdapter bluetoothAdapter;
+	
+	private boolean scanningActive = false;
+	private final Handler handler = new Handler();
+	private final List<Beacon> currentBeacons = new ArrayList<Beacon>();
 	
 	public void startListening(int scanFrequency, List<BeaconFilter> filters, List<BeaconListener> listeners)
 	{
@@ -31,17 +35,30 @@ public class BeaconService extends Service
 		BluetoothManager bluetoothManager = (BluetoothManager)getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
 		this.bluetoothAdapter = bluetoothManager.getAdapter();
 		
-		this.bluetoothAdapter.startLeScan(new LeScanCallback()
-		{
-			@Override
-			public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
-			{
-				processScan(device, rssi, scanRecord);
-			}
-		});
+		this.scanningActive = true;
+		this.bluetoothAdapter.startLeScan(this);
+		
+		startScanningCycle();
 	}
 	
-	private void processScan(BluetoothDevice device, int rssi, byte[] scanRecord)
+	private void startScanningCycle()
+	{
+		if (this.scanningActive)
+		{
+			this.handler.postDelayed(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					finishScanningCycle();
+					startScanningCycle();
+				}
+			}, this.scanFrequency);
+		}
+	}
+	
+	@Override
+	public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
 	{
 		for (BeaconFilter filter : this.filters)
 		{
@@ -50,16 +67,21 @@ public class BeaconService extends Service
 			if (data != null)
 			{
 				Beacon beacon = new Beacon(device.getAddress(), data, rssi);
-				
-				List<Beacon> list = new ArrayList<Beacon>();
-				list.add(beacon);
-				
-				for (BeaconListener listener : this.listeners)
-				{
-					listener.onReceive(list);
-				}
+				this.currentBeacons.add(beacon);
 			}
 		}
+	}
+	
+	private void finishScanningCycle()
+	{
+		Log.e("TEST", "FINISHED SCANNING CYCLE");
+		
+		for (BeaconListener listener : this.listeners)
+		{
+			listener.onReceive(this.currentBeacons);
+		}
+		
+		this.currentBeacons.clear();
 	}
 	
 	public class BeaconBinder extends Binder
@@ -97,7 +119,8 @@ public class BeaconService extends Service
 	{
 		Log.e("TEST", "SERVICE DESTROYED");
 		
-		// TODO: STOP SCANNING
+		this.scanningActive = false;
+		this.bluetoothAdapter.stopLeScan(this);
 		
 		super.onDestroy();
 	}
