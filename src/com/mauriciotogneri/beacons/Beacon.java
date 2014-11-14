@@ -18,7 +18,7 @@ public class Beacon
 		return this.macAddress;
 	}
 	
-	public String get(String key)
+	public Object get(String key)
 	{
 		return this.data.get(key);
 	}

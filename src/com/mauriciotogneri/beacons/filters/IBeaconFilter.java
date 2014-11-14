@@ -16,6 +16,11 @@ public class IBeaconFilter implements BeaconFilter
 		this.minor = minor;
 	}
 	
+	public IBeaconFilter()
+	{
+		this(null, null, null);
+	}
+	
 	@Override
 	public BeaconData getBeaconData(byte[] data)
 	{
