@@ -16,7 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-public class BeaconService extends Service implements LeScanCallback
+class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
 	private List<BeaconFilter> filters;
