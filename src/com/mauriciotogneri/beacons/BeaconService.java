@@ -16,7 +16,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
-class BeaconService extends Service implements LeScanCallback
+public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
 	private List<BeaconFilter> filters;
@@ -117,6 +117,8 @@ class BeaconService extends Service implements LeScanCallback
 	@Override
 	public void onDestroy()
 	{
+		log("SERVICE DESTROYED");
+		
 		this.scanningActive = false;
 		
 		if (this.bluetoothAdapter != null)

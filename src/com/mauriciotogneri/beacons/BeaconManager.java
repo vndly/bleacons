@@ -39,11 +39,13 @@ public class BeaconManager
 				onDisconnected();
 			}
 		};
-		
-		Intent intent = new Intent(context, BeaconService.class);
-		context.bindService(intent, this.serviceConnection, Context.BIND_AUTO_CREATE);
-		
 		// TODO: THROW AN EXCEPTION IF API < 18
+	}
+	
+	public void start()
+	{
+		Intent intent = new Intent(this.context, BeaconService.class);
+		this.context.bindService(intent, this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	public boolean isConnected()
