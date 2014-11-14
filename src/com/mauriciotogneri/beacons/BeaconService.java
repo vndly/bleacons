@@ -22,7 +22,6 @@ class BeaconService extends Service implements LeScanCallback
 	private List<BeaconFilter> filters;
 	private List<BeaconListener> listeners;
 	private BluetoothAdapter bluetoothAdapter;
-	
 	private boolean scanningActive = false;
 	private final Handler handler = new Handler();
 	private final Map<String, Beacon> currentBeacons = new HashMap<String, Beacon>();
@@ -33,10 +32,10 @@ class BeaconService extends Service implements LeScanCallback
 		this.filters = filters;
 		this.listeners = listeners;
 		
+		this.scanningActive = true;
+		
 		BluetoothManager bluetoothManager = (BluetoothManager)getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
 		this.bluetoothAdapter = bluetoothManager.getAdapter();
-		
-		this.scanningActive = true;
 		this.bluetoothAdapter.startLeScan(this);
 		
 		startScanningCycle();
@@ -63,6 +62,8 @@ class BeaconService extends Service implements LeScanCallback
 	{
 		String macAddress = device.getAddress();
 		
+		log("BEACON SCANNED: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + scanRecord.length);
+		
 		for (BeaconFilter filter : this.filters)
 		{
 			BeaconData data = filter.getBeaconData(scanRecord);
@@ -79,7 +80,7 @@ class BeaconService extends Service implements LeScanCallback
 	{
 		if (this.scanningActive)
 		{
-			Log.e("TEST", "FINISHED SCANNING CYCLE");
+			log("FINISHED SCANNING CYCLE");
 			
 			List<Beacon> list = new ArrayList<Beacon>();
 			list.addAll(this.currentBeacons.values());
@@ -102,14 +103,6 @@ class BeaconService extends Service implements LeScanCallback
 	}
 	
 	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-		
-		Log.e("TEST", "SERVICE CREATED");
-	}
-	
-	@Override
 	public IBinder onBind(Intent intent)
 	{
 		return new BeaconBinder();
@@ -118,19 +111,24 @@ class BeaconService extends Service implements LeScanCallback
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		Log.e("TEST", "SERVICE STARTING");
-		
 		return Service.START_STICKY;
 	}
 	
 	@Override
 	public void onDestroy()
 	{
-		Log.e("TEST", "SERVICE DESTROYED");
-		
 		this.scanningActive = false;
-		this.bluetoothAdapter.stopLeScan(this);
+		
+		if (this.bluetoothAdapter != null)
+		{
+			this.bluetoothAdapter.stopLeScan(this);
+		}
 		
 		super.onDestroy();
+	}
+	
+	private void log(String text)
+	{
+		Log.e("BEACONS_LOG", text);
 	}
 }

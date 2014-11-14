@@ -15,7 +15,6 @@ public class BeaconManager
 	private final Context context;
 	private final List<BeaconFilter> filters = new ArrayList<BeaconFilter>();
 	private final List<BeaconListener> listeners = new ArrayList<BeaconListener>();
-	
 	private final int scanFrequency;
 	private boolean isConnected = false;
 	private BeaconService beaconService;
@@ -47,25 +46,6 @@ public class BeaconManager
 		// TODO: THROW AN EXCEPTION IF API < 18
 	}
 	
-	private void onConnected(IBinder service)
-	{
-		Log.e("TEST", "SERVICE CONNECTED");
-		
-		this.isConnected = true;
-		
-		BeaconBinder binder = (BeaconBinder)service;
-		this.beaconService = binder.getService();
-		
-		this.beaconService.startListening(this.scanFrequency, this.filters, this.listeners);
-	}
-	
-	private void onDisconnected()
-	{
-		Log.e("TEST", "SERVICE DISCONNECTED");
-		
-		this.isConnected = false;
-	}
-	
 	public boolean isConnected()
 	{
 		return this.isConnected;
@@ -89,5 +69,29 @@ public class BeaconManager
 	public void stop()
 	{
 		this.context.unbindService(this.serviceConnection);
+	}
+	
+	private void onConnected(IBinder service)
+	{
+		log("SERVICE CONNECTED");
+		
+		this.isConnected = true;
+		
+		BeaconBinder binder = (BeaconBinder)service;
+		this.beaconService = binder.getService();
+		
+		this.beaconService.startListening(this.scanFrequency, this.filters, this.listeners);
+	}
+	
+	private void onDisconnected()
+	{
+		log("SERVICE DISCONNECTED");
+		
+		this.isConnected = false;
+	}
+	
+	private void log(String text)
+	{
+		Log.e("BEACONS_LOG", text);
 	}
 }
