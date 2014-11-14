@@ -1,14 +1,12 @@
 package com.mauriciotogneri.beacons;
 
-import java.util.Map;
-
 public class Beacon
 {
-	private final Map<String, String> data;
+	private final BeaconData data;
 	private final int rssi;
 	private final String macAddress;
 	
-	public Beacon(String macAddress, Map<String, String> data, int rssi)
+	public Beacon(String macAddress, BeaconData data, int rssi)
 	{
 		this.macAddress = macAddress;
 		this.data = data;
@@ -20,9 +18,14 @@ public class Beacon
 		return this.macAddress;
 	}
 	
-	public Map<String, String> getData()
+	public String get(String key)
 	{
-		return this.data;
+		return this.data.get(key);
+	}
+	
+	public boolean contains(String key)
+	{
+		return this.data.contains(key);
 	}
 	
 	public int getRssi()

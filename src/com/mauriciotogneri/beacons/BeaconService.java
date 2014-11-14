@@ -2,7 +2,6 @@ package com.mauriciotogneri.beacons;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -62,7 +61,7 @@ public class BeaconService extends Service implements LeScanCallback
 	{
 		for (BeaconFilter filter : this.filters)
 		{
-			Map<String, String> data = filter.getBeaconData(scanRecord);
+			BeaconData data = filter.getBeaconData(scanRecord);
 			
 			if (data != null)
 			{
@@ -74,14 +73,17 @@ public class BeaconService extends Service implements LeScanCallback
 	
 	private void finishScanningCycle()
 	{
-		Log.e("TEST", "FINISHED SCANNING CYCLE");
-		
-		for (BeaconListener listener : this.listeners)
+		if (this.scanningActive)
 		{
-			listener.onReceive(this.currentBeacons);
+			Log.e("TEST", "FINISHED SCANNING CYCLE");
+			
+			for (BeaconListener listener : this.listeners)
+			{
+				listener.onReceive(this.currentBeacons);
+			}
+			
+			this.currentBeacons.clear();
 		}
-		
-		this.currentBeacons.clear();
 	}
 	
 	public class BeaconBinder extends Binder
