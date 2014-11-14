@@ -1,20 +1,32 @@
 package com.mauriciotogneri.beacons;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Beacon
 {
-	private Map<String, String> data = new HashMap<String, String>();
+	private final Map<String, String> data;
 	private final int rssi;
-	private final int txPower;
 	private final String macAddress;
 	
-	public Beacon(Map<String, String> data, int rssi, int txPower, String macAddress)
+	public Beacon(String macAddress, Map<String, String> data, int rssi)
 	{
+		this.macAddress = macAddress;
 		this.data = data;
 		this.rssi = rssi;
-		this.txPower = txPower;
-		this.macAddress = macAddress;
+	}
+	
+	public String getMacAddress()
+	{
+		return this.macAddress;
+	}
+	
+	public Map<String, String> getData()
+	{
+		return this.data;
+	}
+	
+	public int getRssi()
+	{
+		return this.rssi;
 	}
 }
