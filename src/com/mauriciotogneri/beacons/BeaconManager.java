@@ -81,6 +81,11 @@ public class BeaconManager
 		this.listeners.add(listener);
 	}
 	
+	public void removeListener(BeaconListener listener)
+	{
+		this.listeners.remove(listener);
+	}
+	
 	public void stop()
 	{
 		this.context.unbindService(this.serviceConnection);

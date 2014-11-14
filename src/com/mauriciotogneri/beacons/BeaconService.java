@@ -1,7 +1,9 @@
 package com.mauriciotogneri.beacons;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -23,7 +25,7 @@ public class BeaconService extends Service implements LeScanCallback
 	
 	private boolean scanningActive = false;
 	private final Handler handler = new Handler();
-	private final List<Beacon> currentBeacons = new ArrayList<Beacon>();
+	private final Map<String, Beacon> currentBeacons = new HashMap<String, Beacon>();
 	
 	public void startListening(int scanFrequency, List<BeaconFilter> filters, List<BeaconListener> listeners)
 	{
@@ -59,14 +61,16 @@ public class BeaconService extends Service implements LeScanCallback
 	@Override
 	public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
 	{
+		String macAddress = device.getAddress();
+		
 		for (BeaconFilter filter : this.filters)
 		{
 			BeaconData data = filter.getBeaconData(scanRecord);
 			
 			if (data != null)
 			{
-				Beacon beacon = new Beacon(device.getAddress(), data, rssi);
-				this.currentBeacons.add(beacon);
+				Beacon beacon = new Beacon(macAddress, data, rssi);
+				this.currentBeacons.put(macAddress, beacon);
 			}
 		}
 	}
@@ -77,9 +81,12 @@ public class BeaconService extends Service implements LeScanCallback
 		{
 			Log.e("TEST", "FINISHED SCANNING CYCLE");
 			
+			List<Beacon> list = new ArrayList<Beacon>();
+			list.addAll(this.currentBeacons.values());
+			
 			for (BeaconListener listener : this.listeners)
 			{
-				listener.onReceive(this.currentBeacons);
+				listener.onReceive(list);
 			}
 			
 			this.currentBeacons.clear();
