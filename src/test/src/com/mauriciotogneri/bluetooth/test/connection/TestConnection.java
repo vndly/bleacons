@@ -10,6 +10,8 @@ import com.mauriciotogneri.bluetooth.test.R;
 
 public class TestConnection extends Activity
 {
+	public static final String UUID = "a6989332-69a6-11e4-b116-123b93f75cba";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{

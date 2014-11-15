@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -25,6 +27,9 @@ public class StartClient extends Activity implements DeviceScanner
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_start_client);
+		
+		Window window = getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		this.deviceAdapter = new DeviceAdapter(this, new ArrayList<BluetoothDevice>());
 		
