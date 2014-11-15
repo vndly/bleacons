@@ -14,5 +14,7 @@
     <string name="connection_main_start_client">Start Client</string>
     <string name="connection_main_start_server">Start Server</string>
     
+    <string name="connection_main_server_send_message_title">Send message</string>
+    
 
 </resources>

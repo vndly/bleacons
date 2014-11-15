@@ -2,8 +2,11 @@ package com.mauriciotogneri.bluetooth.test.connection;
 
 import java.util.ArrayList;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -11,10 +14,10 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.mauriciotogneri.bluetooth.connection.ConnectionInterface;
 import com.mauriciotogneri.bluetooth.connection.ConnectionManager;
 import com.mauriciotogneri.bluetooth.test.R;
@@ -65,8 +68,37 @@ public class StartServer extends Activity implements ConnectionInterface
 	
 	private void deviceSelected(BluetoothDevice device)
 	{
-		// TODO
-		Toast.makeText(this, device.getAddress(), Toast.LENGTH_SHORT).show();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setIcon(android.R.drawable.ic_menu_send);
+		builder.setTitle(R.string.connection_main_server_send_message_title);
+		builder.setCancelable(true);
+		
+		LayoutInflater inflater = LayoutInflater.from(this);
+		final View layout = inflater.inflate(R.layout.dialog_send_message, null);
+		builder.setView(layout);
+		
+		builder.setPositiveButton(R.string.connection_button_send, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				EditText editText = (EditText)layout.findViewById(R.id.message);
+				
+				send(editText.getText().toString());
+			}
+		});
+		
+		builder.setNegativeButton(R.string.connection_button_cancel, null);
+		
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+	private void send(String message)
+	{
+		this.connectionManager.send(message.getBytes());
+		
+		addHistory(">>> " + message);
 	}
 	
 	private void disconnect()
