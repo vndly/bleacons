@@ -47,7 +47,7 @@ public class ScannerManager
 		return result;
 	}
 	
-	public void start(boolean includePaired)
+	public void scan(boolean includePaired)
 	{
 		if (includePaired)
 		{
@@ -59,15 +59,18 @@ public class ScannerManager
 			}
 		}
 		
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		this.context.registerReceiver(this.receiver, filter);
-		
-		this.bluetoothAdapter.startDiscovery();
+		if (!this.bluetoothAdapter.isDiscovering())
+		{
+			IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+			this.context.registerReceiver(this.receiver, filter);
+			
+			this.bluetoothAdapter.startDiscovery();
+		}
 	}
 	
-	public void start()
+	public void scan()
 	{
-		start(false);
+		scan(false);
 	}
 	
 	private void onDeviceDiscovered(BluetoothDevice device)
