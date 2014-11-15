@@ -5,7 +5,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-public class ClientThread extends Thread
+public class ClientThread extends LinkThread
 {
 	private final ConnectionInterface connectionInterface;
 	private final ConnectionThread connectionThread;
@@ -50,6 +50,7 @@ public class ClientThread extends Thread
 		}
 	}
 	
+	@Override
 	public void close()
 	{
 		try

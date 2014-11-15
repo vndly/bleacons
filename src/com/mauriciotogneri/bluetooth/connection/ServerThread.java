@@ -7,7 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
-public class ServerThread extends Thread
+public class ServerThread extends LinkThread
 {
 	private final ConnectionInterface connectionInterface;
 	private BluetoothServerSocket serverSocket;
@@ -53,6 +53,7 @@ public class ServerThread extends Thread
 		}
 	}
 	
+	@Override
 	public void close()
 	{
 		try

@@ -8,37 +8,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-public class ConnectionManager
+public class ConnectionManager implements ConnectionInterface
 {
 	private final BluetoothAdapter bluetoothAdapter;
 	
-	private final ClientThread clientThread;
-	private final ServerThread serverThread;
+	private LinkThread linkThread;
+	
+	private final ConnectionInterface connectionInterface;
+	
 	private final ConnectionThread connectionThread;
 	
 	private final Context context;
 	private BroadcastReceiver receiver;
 	
-	public ConnectionManager(Context context, BluetoothDevice device, String uuid, ConnectionInterface connectionInterface)
+	public ConnectionManager(Context context, ConnectionInterface connectionInterface)
 	{
 		this.context = context;
 		this.bluetoothAdapter = getBluetoothAdapter();
-		
+		this.connectionInterface = connectionInterface;
 		this.connectionThread = new ConnectionThread();
-		
-		this.clientThread = new ClientThread(device, uuid, connectionInterface, this.connectionThread);
-		this.serverThread = null;
-	}
-	
-	public ConnectionManager(Context context, String uuid, ConnectionInterface connectionInterface)
-	{
-		this.context = context;
-		this.bluetoothAdapter = getBluetoothAdapter();
-		
-		this.connectionThread = new ConnectionThread();
-		
-		this.serverThread = new ServerThread(this.bluetoothAdapter, uuid, connectionInterface, this.connectionThread);
-		this.clientThread = null;
 	}
 	
 	private BluetoothAdapter getBluetoothAdapter()
@@ -56,18 +44,21 @@ public class ConnectionManager
 		return result;
 	}
 	
-	public void start()
+	public void startServer(String uuid, int duration)
+	{
+		stopDiscovery();
+		makeVisible(duration);
+		
+		this.linkThread = new ServerThread(this.bluetoothAdapter, uuid, this, this.connectionThread);
+		this.linkThread.start();
+	}
+	
+	public void startClient(BluetoothDevice device, String uuid)
 	{
 		stopDiscovery();
 		
-		if (this.clientThread != null)
-		{
-			this.clientThread.start();
-		}
-		else
-		{
-			this.serverThread.start();
-		}
+		this.linkThread = new ClientThread(device, uuid, this, this.connectionThread);
+		this.linkThread.start();
 	}
 	
 	private void stopDiscovery()
@@ -93,7 +84,7 @@ public class ConnectionManager
 			
 			for (BluetoothDevice device : pairedDevices)
 			{
-				newDeviceDiscovered(device);
+				onDeviceDiscovered(device);
 			}
 		}
 		
@@ -105,7 +96,7 @@ public class ConnectionManager
 				if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction()))
 				{
 					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					newDeviceDiscovered(device);
+					onDeviceDiscovered(device);
 				}
 			}
 		};
@@ -116,20 +107,11 @@ public class ConnectionManager
 		this.bluetoothAdapter.startDiscovery();
 	}
 	
-	private void newDeviceDiscovered(BluetoothDevice device)
-	{
-		// TODO
-	}
-	
 	public void close()
 	{
-		if (this.clientThread != null)
+		if (this.linkThread != null)
 		{
-			this.clientThread.close();
-		}
-		else
-		{
-			this.serverThread.close();
+			this.linkThread.close();
 		}
 		
 		this.connectionThread.close();
@@ -145,5 +127,29 @@ public class ConnectionManager
 	public void send(byte[] message)
 	{
 		this.connectionThread.send(message);
+	}
+	
+	@Override
+	public void onReceive(byte[] message)
+	{
+		this.connectionInterface.onReceive(message);
+	}
+	
+	@Override
+	public void onConnect()
+	{
+		this.connectionInterface.onConnect();
+	}
+	
+	@Override
+	public void onDisconnect()
+	{
+		this.connectionInterface.onDisconnect();
+	}
+	
+	@Override
+	public void onDeviceDiscovered(BluetoothDevice device)
+	{
+		this.connectionInterface.onDeviceDiscovered(device);
 	}
 }
