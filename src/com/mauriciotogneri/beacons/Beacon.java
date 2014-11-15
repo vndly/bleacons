@@ -18,9 +18,10 @@ public class Beacon
 		return this.macAddress;
 	}
 	
-	public Object get(String key)
+	@SuppressWarnings("unchecked")
+	public <Type> Type get(String key)
 	{
-		return this.data.get(key);
+		return (Type)this.data.get(key);
 	}
 	
 	public boolean contains(String key)
