@@ -2,5 +2,12 @@
 <resources>
 
     <string name="app_name">Test Bluetooth</string>
+    
+    <string name="connection_button_cancel">Cancel</string>
+    <string name="connection_button_disconnect">Disconnect</string>
+    
+    <string name="connection_main_start_client">Start Client</string>
+    <string name="connection_main_start_server">Start Server</string>
+    
 
 </resources>

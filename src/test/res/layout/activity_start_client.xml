@@ -4,18 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:padding="10dp">
+
+    <ListView
+        android:id="@+id/device_list"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
-        android:id="@+id/start_client"
-        android:layout_width="wrap_content"
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/connection_main_start_client" />
-
-    <Button
-        android:id="@+id/start_server"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/connection_main_start_server" />
+        android:text="@string/connection_button_cancel" />
 
 </LinearLayout>
