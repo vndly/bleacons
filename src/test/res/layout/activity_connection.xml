@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+	    <Button
+	        android:id="@+id/search"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="Search Devices" />
+	    
+	    <Button
+	        android:id="@+id/start_server"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="Start Server" />
+    
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+	    android:orientation="horizontal"
+	    android:layout_weight="1">
+	    
+	    <ListView
+	        android:id="@+id/devices"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+
+	</LinearLayout>
+	
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+	    android:orientation="horizontal"
+	    android:layout_weight="1">
+	    
+	    <TextView
+	        android:id="@+id/console"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="#000000"
+	        android:textColor="#FFFFFF" />
+
+	</ScrollView>
+	
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    
+        <EditText
+            android:id="@+id/message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="INSERT MESSAGE" />
+        
+	    <Button
+	        android:id="@+id/send"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Send"
+	        android:enabled="false" />
+    
+    </LinearLayout>
+	
+</LinearLayout>
