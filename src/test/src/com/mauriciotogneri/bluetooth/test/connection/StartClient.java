@@ -80,6 +80,7 @@ public class StartClient extends Activity implements DeviceScanner
 	
 	private void scan()
 	{
+		this.deviceAdapter.clear();
 		this.scannerManager.scan();
 		
 		Button scan = (Button)findViewById(R.id.scan);

@@ -65,13 +65,11 @@ public class StartServer extends Activity implements ConnectionInterface
 	{
 		// TODO
 		Toast.makeText(this, device.getAddress(), Toast.LENGTH_SHORT).show();
-		
-		this.connectionManager.close();
 	}
 	
 	private void disconnect()
 	{
-		// TODO
+		this.connectionManager.close();
 		finish();
 	}
 	
@@ -103,15 +101,43 @@ public class StartServer extends Activity implements ConnectionInterface
 		addHistory("<<< " + device.getName() + " - " + device.getAddress() + ": " + new String(message));
 	}
 	
-	@Override
-	public void onConnect(BluetoothDevice device)
+	private void addDevice(BluetoothDevice device)
 	{
-		addHistory("Device connected: " + device.getName() + " - " + device.getAddress());
+		this.deviceAdapter.add(device);
+	}
+	
+	private void removeDevice(BluetoothDevice device)
+	{
+		this.deviceAdapter.remove(device);
 	}
 	
 	@Override
-	public void onDisconnect(BluetoothDevice device)
+	public void onConnect(final BluetoothDevice device)
+	{
+		addHistory("Device connected: " + device.getName() + " - " + device.getAddress());
+		
+		runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				addDevice(device);
+			}
+		});
+	}
+	
+	@Override
+	public void onDisconnect(final BluetoothDevice device)
 	{
 		addHistory("Device disconnected: " + device.getName() + " - " + device.getAddress());
+		
+		runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				removeDevice(device);
+			}
+		});
 	}
 }
