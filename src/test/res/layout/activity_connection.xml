@@ -1,21 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/start_client"
+    <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connection_main_start_client" />
+        android:gravity="center_horizontal" >
 
-    <Button
-        android:id="@+id/start_server"
+        <Button
+            android:id="@+id/start_client"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_main_start_client" />
+        
+    </TableRow>
+
+    <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connection_main_start_server" />
+        android:gravity="center_horizontal" >
 
-</LinearLayout>
+        <Button
+            android:id="@+id/start_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_main_start_server" />
+        
+    </TableRow>
+
+</TableLayout>

@@ -6,6 +6,23 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:background="@layout/border">
+        
+        <TextView
+            android:id="@+id/chat_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp" />
+
+    </ScrollView>
+    
     <ListView
         android:id="@+id/device_list"
         android:layout_width="wrap_content"
@@ -15,16 +32,9 @@
         android:background="@layout/border" />
 
     <Button
-        android:id="@+id/scan"
+        android:id="@+id/disconnect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/connection_button_scanning" />
-    
-    <Button
-        android:id="@+id/cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/connection_button_cancel" />
+        android:text="@string/connection_button_disconnect" />
 
 </LinearLayout>
