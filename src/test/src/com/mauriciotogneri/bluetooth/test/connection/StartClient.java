@@ -10,10 +10,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import com.mauriciotogneri.bluetooth.connection.DeviceScanner;
+import com.mauriciotogneri.bluetooth.connection.ScannerManager;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class StartClient extends Activity
+public class StartClient extends Activity implements DeviceScanner
 {
+	private ScannerManager scannerManager;
 	private DeviceAdapter deviceAdapter;
 	
 	@Override
@@ -45,15 +48,25 @@ public class StartClient extends Activity
 				cancel();
 			}
 		});
+		
+		this.scannerManager = new ScannerManager(this, this);
+		this.scannerManager.start();
 	}
 	
 	private void deviceSelected(BluetoothDevice device)
 	{
-		
+		this.scannerManager.stop();
 	}
 	
 	private void cancel()
 	{
+		this.scannerManager.stop();
 		finish();
+	}
+	
+	@Override
+	public void onDeviceDiscovered(BluetoothDevice device)
+	{
+		this.deviceAdapter.add(device);
 	}
 }

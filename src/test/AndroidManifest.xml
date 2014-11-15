@@ -29,6 +29,14 @@
             
         </activity>
         
+        <activity
+            android:name=".connection.StartClient"
+            android:label="@string/app_name" />
+        
+        <activity
+            android:name=".connection.StartServer"
+            android:label="@string/app_name" />
+        
         <service
             android:name="com.mauriciotogneri.beacons.BeaconService" 
             android:exported="false" />

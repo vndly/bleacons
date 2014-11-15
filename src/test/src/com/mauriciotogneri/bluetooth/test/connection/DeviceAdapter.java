@@ -13,26 +13,12 @@ import com.mauriciotogneri.bluetooth.test.R;
 public class DeviceAdapter extends ArrayAdapter<BluetoothDevice>
 {
 	private final LayoutInflater inflater;
-	private final List<BluetoothDevice> list;
 	
 	public DeviceAdapter(Context context, List<BluetoothDevice> list)
 	{
-		super(context, android.R.layout.simple_list_item_1, list);
+		super(context, R.layout.device_row, list);
 		
 		this.inflater = LayoutInflater.from(context);
-		this.list = list;
-	}
-	
-	public void addDevice(BluetoothDevice device)
-	{
-		this.list.add(device);
-		notifyDataSetChanged();
-	}
-	
-	public void removeDevice(BluetoothDevice device)
-	{
-		this.list.remove(device);
-		notifyDataSetChanged();
 	}
 	
 	@Override
@@ -43,7 +29,7 @@ public class DeviceAdapter extends ArrayAdapter<BluetoothDevice>
 		
 		if (convertView == null)
 		{
-			convertView = this.inflater.inflate(R.layout.device_row, null);
+			convertView = this.inflater.inflate(R.layout.device_row, parent, false);
 		}
 		
 		TextView address = (TextView)convertView.findViewById(R.id.device_address);
