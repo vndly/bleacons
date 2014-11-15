@@ -96,6 +96,25 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		editText.setText("");
 	}
 	
+	private void enableButtons(final boolean value)
+	{
+		runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				EditText editText = (EditText)findViewById(R.id.message);
+				editText.setEnabled(value);
+				
+				ImageButton send = (ImageButton)findViewById(R.id.send);
+				send.setEnabled(value);
+				
+				Button disconnect = (Button)findViewById(R.id.disconnect);
+				disconnect.setEnabled(value);
+			}
+		});
+	}
+	
 	@Override
 	public void onReceive(BluetoothDevice device, byte[] message)
 	{
@@ -107,26 +126,14 @@ public class ChatScreen extends Activity implements ConnectionInterface
 	{
 		addHistory("Connected...");
 		
-		runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				EditText editText = (EditText)findViewById(R.id.message);
-				editText.setEnabled(true);
-				
-				ImageButton send = (ImageButton)findViewById(R.id.send);
-				send.setEnabled(true);
-				
-				Button disconnect = (Button)findViewById(R.id.disconnect);
-				disconnect.setEnabled(true);
-			}
-		});
+		enableButtons(true);
 	}
 	
 	@Override
 	public void onDisconnect(BluetoothDevice device)
 	{
 		addHistory("Disconnected...");
+		
+		enableButtons(false);
 	}
 }
