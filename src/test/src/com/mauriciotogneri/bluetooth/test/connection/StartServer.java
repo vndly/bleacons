@@ -24,6 +24,8 @@ public class StartServer extends Activity implements ConnectionInterface
 	private ConnectionManager connectionManager;
 	private DeviceAdapter deviceAdapter;
 	
+	private static final int VISIBILITY_DURATION = 60;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -58,7 +60,7 @@ public class StartServer extends Activity implements ConnectionInterface
 		});
 		
 		this.connectionManager = new ConnectionManager(this, this);
-		this.connectionManager.startServer(TestConnection.UUID, 60);
+		this.connectionManager.startServer(TestConnection.UUID, StartServer.VISIBILITY_DURATION);
 	}
 	
 	private void deviceSelected(BluetoothDevice device)
