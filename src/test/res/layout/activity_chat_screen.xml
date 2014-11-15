@@ -31,12 +31,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:enabled="false"
             android:inputType="text" />
 
         <ImageButton
             android:id="@+id/send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="false"
             android:contentDescription="@string/image_description"
             android:src="@android:drawable/ic_menu_send" />
         
@@ -46,6 +48,7 @@
         android:id="@+id/disconnect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/connection_button_disconnect" />
 
 </LinearLayout>

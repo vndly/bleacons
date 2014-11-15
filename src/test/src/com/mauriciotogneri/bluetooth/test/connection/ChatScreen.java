@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import com.mauriciotogneri.bluetooth.connection.ConnectionInterface;
@@ -24,7 +25,7 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_screen);
 		
-		Button send = (Button)findViewById(R.id.send);
+		ImageButton send = (ImageButton)findViewById(R.id.send);
 		send.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -80,6 +81,15 @@ public class ChatScreen extends Activity implements ConnectionInterface
 	public void onConnect(BluetoothDevice device)
 	{
 		addHistory("Connected...");
+		
+		EditText editText = (EditText)findViewById(R.id.message);
+		editText.setEnabled(true);
+		
+		ImageButton send = (ImageButton)findViewById(R.id.send);
+		send.setEnabled(true);
+		
+		Button disconnect = (Button)findViewById(R.id.disconnect);
+		disconnect.setEnabled(true);
 	}
 	
 	@Override
