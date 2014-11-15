@@ -75,6 +75,12 @@ public class StartServer extends Activity implements ConnectionInterface
 		finish();
 	}
 	
+	@Override
+	public void onBackPressed()
+	{
+		disconnect();
+	}
+	
 	private void addHistory(final String text)
 	{
 		runOnUiThread(new Runnable()

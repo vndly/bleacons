@@ -78,6 +78,12 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		finish();
 	}
 	
+	@Override
+	public void onBackPressed()
+	{
+		disconnect();
+	}
+	
 	private void send()
 	{
 		EditText editText = (EditText)findViewById(R.id.message);
@@ -86,6 +92,8 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		this.connectionManager.send(message.getBytes());
 		
 		addHistory(">>> " + message);
+		
+		editText.setText("");
 	}
 	
 	@Override

@@ -93,6 +93,12 @@ public class StartClient extends Activity implements DeviceScanner
 		finish();
 	}
 	
+	@Override
+	public void onBackPressed()
+	{
+		cancel();
+	}
+	
 	private void stopScanning()
 	{
 		this.scannerManager.stop();
