@@ -4,11 +4,11 @@ import android.bluetooth.BluetoothDevice;
 
 public interface ConnectionInterface
 {
-	void onReceive(byte[] message);
+	void onReceive(BluetoothDevice device, byte[] message);
 	
-	void onConnect();
+	void onConnect(BluetoothDevice device);
 	
-	void onDisconnect();
+	void onDisconnect(BluetoothDevice device);
 	
 	void onDeviceDiscovered(BluetoothDevice device);
 }

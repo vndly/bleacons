@@ -130,21 +130,21 @@ public class ConnectionManager implements ConnectionInterface
 	}
 	
 	@Override
-	public void onReceive(byte[] message)
+	public void onReceive(BluetoothDevice device, byte[] message)
 	{
-		this.connectionInterface.onReceive(message);
+		this.connectionInterface.onReceive(device, message);
 	}
 	
 	@Override
-	public void onConnect()
+	public void onConnect(BluetoothDevice device)
 	{
-		this.connectionInterface.onConnect();
+		this.connectionInterface.onConnect(device);
 	}
 	
 	@Override
-	public void onDisconnect()
+	public void onDisconnect(BluetoothDevice device)
 	{
-		this.connectionInterface.onDisconnect();
+		this.connectionInterface.onDisconnect(device);
 	}
 	
 	@Override

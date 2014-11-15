@@ -3,7 +3,6 @@ package com.mauriciotogneri.bluetooth.connection;
 import java.io.IOException;
 import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
@@ -38,9 +37,7 @@ public class ServerThread extends LinkThread
 			
 			if (socket != null)
 			{
-				BluetoothDevice device = socket.getRemoteDevice();
-				
-				this.connectionInterface.onConnect();
+				this.connectionInterface.onConnect(socket.getRemoteDevice());
 				
 				this.connectionThread.initialize(socket, this.connectionInterface);
 				

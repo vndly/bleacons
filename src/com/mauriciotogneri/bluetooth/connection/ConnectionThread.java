@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
 public class ConnectionThread extends Thread
 {
 	private BluetoothSocket socket;
+	private BluetoothDevice device;
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	private ConnectionInterface connectionInterface;
@@ -18,6 +20,7 @@ public class ConnectionThread extends Thread
 	public void initialize(BluetoothSocket socket, ConnectionInterface connectionInterface)
 	{
 		this.socket = socket;
+		this.device = socket.getRemoteDevice();
 		this.connectionInterface = connectionInterface;
 		
 		try
@@ -44,7 +47,7 @@ public class ConnectionThread extends Thread
 			{
 				int bytes = this.inputStream.read(buffer);
 				
-				this.connectionInterface.onReceive(Arrays.copyOfRange(buffer, 0, bytes));
+				this.connectionInterface.onReceive(this.device, Arrays.copyOfRange(buffer, 0, bytes));
 			}
 			catch (IOException e)
 			{
@@ -52,7 +55,7 @@ public class ConnectionThread extends Thread
 			}
 		}
 		
-		this.connectionInterface.onDisconnect();
+		this.connectionInterface.onDisconnect(this.device);
 	}
 	
 	public boolean send(byte[] bytes)

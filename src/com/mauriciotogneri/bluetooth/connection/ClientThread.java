@@ -33,7 +33,7 @@ public class ClientThread extends LinkThread
 		{
 			this.socket.connect();
 			
-			this.connectionInterface.onConnect();
+			this.connectionInterface.onConnect(this.socket.getRemoteDevice());
 			
 			this.connectionThread.initialize(this.socket, this.connectionInterface);
 		}
