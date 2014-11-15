@@ -33,7 +33,7 @@ public class DeviceAdapter extends ArrayAdapter<BluetoothDevice>
 		}
 		
 		TextView address = (TextView)convertView.findViewById(R.id.device_address);
-		address.setText(device.getAddress());
+		address.setText(device.getName() + " - " + device.getAddress());
 		
 		return convertView;
 	}

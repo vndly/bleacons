@@ -3,6 +3,7 @@ package com.mauriciotogneri.bluetooth.test.connection;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,6 +40,16 @@ public class StartClient extends Activity implements DeviceScanner
 			}
 		});
 		
+		Button scan = (Button)findViewById(R.id.scan);
+		scan.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				scan();
+			}
+		});
+		
 		Button cancel = (Button)findViewById(R.id.cancel);
 		cancel.setOnClickListener(new OnClickListener()
 		{
@@ -50,18 +61,40 @@ public class StartClient extends Activity implements DeviceScanner
 		});
 		
 		this.scannerManager = new ScannerManager(this, this);
-		this.scannerManager.start();
+		scan();
 	}
 	
 	private void deviceSelected(BluetoothDevice device)
 	{
-		this.scannerManager.stop();
+		Intent intent = new Intent(this, ChatScreen.class);
+		intent.putExtra(ChatScreen.PARAMETER_DEVICE, device);
+		startActivity(intent);
+		
+		stopScanning();
+	}
+	
+	private void scan()
+	{
+		this.scannerManager.scan();
+		
+		Button scan = (Button)findViewById(R.id.scan);
+		scan.setEnabled(false);
+		scan.setText(R.string.connection_button_scanning);
 	}
 	
 	private void cancel()
 	{
-		this.scannerManager.stop();
+		stopScanning();
 		finish();
+	}
+	
+	private void stopScanning()
+	{
+		this.scannerManager.stop();
+		
+		Button scan = (Button)findViewById(R.id.scan);
+		scan.setEnabled(true);
+		scan.setText(R.string.connection_button_scan);
 	}
 	
 	@Override

@@ -3,8 +3,13 @@
 
     <string name="app_name">Test Bluetooth</string>
     
+    <string name="image_description"></string>
+    
+    <string name="connection_button_scan">Scan</string>
+    <string name="connection_button_scanning">Scanning&#8230;</string>
     <string name="connection_button_cancel">Cancel</string>
     <string name="connection_button_disconnect">Disconnect</string>
+    <string name="connection_button_send">Send</string>
     
     <string name="connection_main_start_client">Start Client</string>
     <string name="connection_main_start_server">Start Server</string>
