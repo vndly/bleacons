@@ -1,12 +1,9 @@
 package com.mauriciotogneri.bluetooth.connection;
 
-import java.util.Set;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 
 public class ConnectionManager implements ConnectionInterface
 {
@@ -19,7 +16,6 @@ public class ConnectionManager implements ConnectionInterface
 	private final ConnectionThread connectionThread;
 	
 	private final Context context;
-	private BroadcastReceiver receiver;
 	
 	public ConnectionManager(Context context, ConnectionInterface connectionInterface)
 	{
@@ -46,7 +42,6 @@ public class ConnectionManager implements ConnectionInterface
 	
 	public void startServer(String uuid, int duration)
 	{
-		stopDiscovery();
 		makeVisible(duration);
 		
 		this.linkThread = new ServerThread(this.bluetoothAdapter, uuid, this, this.connectionThread);
@@ -55,18 +50,8 @@ public class ConnectionManager implements ConnectionInterface
 	
 	public void startClient(BluetoothDevice device, String uuid)
 	{
-		stopDiscovery();
-		
 		this.linkThread = new ClientThread(device, uuid, this, this.connectionThread);
 		this.linkThread.start();
-	}
-	
-	private void stopDiscovery()
-	{
-		if (this.bluetoothAdapter.isDiscovering())
-		{
-			this.bluetoothAdapter.cancelDiscovery();
-		}
 	}
 	
 	public void makeVisible(int duration)
@@ -74,37 +59,6 @@ public class ConnectionManager implements ConnectionInterface
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
 		this.context.startActivity(intent);
-	}
-	
-	public void searchDevices(boolean includePaired)
-	{
-		if (includePaired)
-		{
-			Set<BluetoothDevice> pairedDevices = this.bluetoothAdapter.getBondedDevices();
-			
-			for (BluetoothDevice device : pairedDevices)
-			{
-				onDeviceDiscovered(device);
-			}
-		}
-		
-		this.receiver = new BroadcastReceiver()
-		{
-			@Override
-			public void onReceive(Context context, Intent intent)
-			{
-				if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction()))
-				{
-					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					onDeviceDiscovered(device);
-				}
-			}
-		};
-		
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		this.context.registerReceiver(this.receiver, filter);
-		
-		this.bluetoothAdapter.startDiscovery();
 	}
 	
 	public void close()
@@ -115,13 +69,6 @@ public class ConnectionManager implements ConnectionInterface
 		}
 		
 		this.connectionThread.close();
-		
-		stopDiscovery();
-		
-		if (this.receiver != null)
-		{
-			this.context.unregisterReceiver(this.receiver);
-		}
 	}
 	
 	public void send(byte[] message)
@@ -145,11 +92,5 @@ public class ConnectionManager implements ConnectionInterface
 	public void onDisconnect(BluetoothDevice device)
 	{
 		this.connectionInterface.onDisconnect(device);
-	}
-	
-	@Override
-	public void onDeviceDiscovered(BluetoothDevice device)
-	{
-		this.connectionInterface.onDeviceDiscovered(device);
 	}
 }

@@ -9,6 +9,4 @@ public interface ConnectionInterface
 	void onConnect(BluetoothDevice device);
 	
 	void onDisconnect(BluetoothDevice device);
-	
-	void onDeviceDiscovered(BluetoothDevice device);
 }
