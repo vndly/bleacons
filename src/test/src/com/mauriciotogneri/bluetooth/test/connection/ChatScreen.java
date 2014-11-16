@@ -57,6 +57,8 @@ public class ChatScreen extends Activity implements ClientEvent
 		
 		TextView deviceName = (TextView)findViewById(R.id.device_name);
 		deviceName.setText(this.clientConnection.getDeviceName() + " - " + this.clientConnection.getDeviceAddress());
+		
+		addHistory("Connecting...");
 	}
 	
 	private void addHistory(final String text)
@@ -113,6 +115,7 @@ public class ChatScreen extends Activity implements ClientEvent
 				send.setEnabled(value);
 				
 				Button disconnect = (Button)findViewById(R.id.disconnect);
+				disconnect.setText(R.string.connection_button_disconnect);
 				disconnect.setEnabled(value);
 			}
 		});

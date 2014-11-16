@@ -8,6 +8,7 @@
     <string name="connection_button_scan">Scan</string>
     <string name="connection_button_scanning">Scanning&#8230;</string>
     <string name="connection_button_cancel">Cancel</string>
+    <string name="connection_button_connecting">Connecting</string>
     <string name="connection_button_disconnect">Disconnect</string>
     <string name="connection_button_send">Send</string>
     
