@@ -35,6 +35,7 @@ public class ClientConnection
 		}
 		catch (ConnectionException e)
 		{
+			this.clientEvent.onErrorConnecting();
 		}
 	}
 	

@@ -37,16 +37,17 @@ public class ServerConnection
 			this.serverLink = new ServerLink(socket, this.serverEvent);
 			this.serverLink.start();
 			
-			this.serverEvent.onClientConnect(socket.getRemoteDevice());
+			this.serverEvent.onConnect(socket.getRemoteDevice());
 		}
 		catch (ConnectionException e)
 		{
+			this.serverEvent.onErrorOpeningConnection();
 		}
 	}
 	
-	void clientErrorConnecting()
+	void errorOpeningConnection()
 	{
-		
+		this.serverEvent.onErrorOpeningConnection();
 	}
 	
 	public void makeVisible(int duration)

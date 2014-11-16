@@ -34,7 +34,7 @@ public class ServerThread extends Thread
 		}
 		catch (Exception e)
 		{
-			this.serverConnection.clientErrorConnecting();
+			this.serverConnection.errorOpeningConnection();
 		}
 		
 		return result;
@@ -50,20 +50,13 @@ public class ServerThread extends Thread
 			
 			this.serverConnection.clientConnected(socket);
 		}
-		catch (Exception connectException)
+		catch (Exception e)
 		{
-			// TODO
-			connectException.printStackTrace();
+			this.serverConnection.errorOpeningConnection();
 		}
 		finally
 		{
-			try
-			{
-				this.serverSocket.close();
-			}
-			catch (Exception closeException)
-			{
-			}
+			close();
 		}
 	}
 	

@@ -41,17 +41,13 @@ public class ClientThread extends Thread
 			
 			this.clientConnection.connected(this.socket);
 		}
-		catch (Exception connectException)
+		catch (Exception e)
 		{
 			this.clientConnection.errorConnecting();
-			
-			try
-			{
-				this.socket.close();
-			}
-			catch (Exception closeException)
-			{
-			}
+		}
+		finally
+		{
+			close();
 		}
 	}
 	

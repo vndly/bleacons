@@ -6,7 +6,9 @@ public interface ServerEvent
 {
 	void onReceive(BluetoothDevice device, byte[] message);
 	
-	void onClientConnect(BluetoothDevice device);
+	void onConnect(BluetoothDevice device);
 	
-	void onClientDisconnect(BluetoothDevice device);
+	void onErrorOpeningConnection();
+	
+	void onDisconnect(BluetoothDevice device);
 }

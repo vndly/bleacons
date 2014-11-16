@@ -25,6 +25,6 @@ public class ServerLink extends ConnectionThread
 	@Override
 	protected void onDisconnect(BluetoothDevice device)
 	{
-		this.serverEvent.onClientDisconnect(device);
+		this.serverEvent.onDisconnect(device);
 	}
 }
