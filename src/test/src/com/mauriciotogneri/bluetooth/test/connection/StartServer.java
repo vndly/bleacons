@@ -18,13 +18,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import com.mauriciotogneri.bluetooth.connection.ConnectionInterface;
-import com.mauriciotogneri.bluetooth.connection.ConnectionManager;
+import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
+import com.mauriciotogneri.bluetooth.connection.server.ServerConnection;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class StartServer extends Activity implements ConnectionInterface
+public class StartServer extends Activity implements ConnectionEvent
 {
-	private ConnectionManager connectionManager;
+	private ServerConnection serverConnection;
 	private DeviceAdapter deviceAdapter;
 	
 	private static final int VISIBILITY_DURATION = 60;
@@ -62,8 +62,8 @@ public class StartServer extends Activity implements ConnectionInterface
 			}
 		});
 		
-		this.connectionManager = new ConnectionManager(this, this);
-		this.connectionManager.startServer(TestConnection.UUID, StartServer.VISIBILITY_DURATION);
+		this.serverConnection = new ServerConnection(this);
+		this.serverConnection.start(this, TestConnection.UUID, StartServer.VISIBILITY_DURATION);
 	}
 	
 	private void deviceSelected(BluetoothDevice device)
@@ -96,14 +96,14 @@ public class StartServer extends Activity implements ConnectionInterface
 	
 	private void send(String message)
 	{
-		this.connectionManager.send(message.getBytes());
+		this.serverConnection.send(message.getBytes());
 		
 		addHistory(">>> " + message);
 	}
 	
 	private void disconnect()
 	{
-		this.connectionManager.close();
+		this.serverConnection.close();
 		finish();
 	}
 	

@@ -12,13 +12,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import com.mauriciotogneri.bluetooth.connection.ConnectionInterface;
-import com.mauriciotogneri.bluetooth.connection.ConnectionManager;
+import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
+import com.mauriciotogneri.bluetooth.connection.client.ClientConnection;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class ChatScreen extends Activity implements ConnectionInterface
+public class ChatScreen extends Activity implements ConnectionEvent
 {
-	private ConnectionManager connectionManager;
+	private ClientConnection clientConnection;
 	public static final String PARAMETER_DEVICE = "device";
 	
 	@Override
@@ -52,8 +52,8 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		
 		BluetoothDevice device = getIntent().getExtras().getParcelable(ChatScreen.PARAMETER_DEVICE);
 		
-		this.connectionManager = new ConnectionManager(this, this);
-		this.connectionManager.startClient(device, TestConnection.UUID);
+		this.clientConnection = new ClientConnection(this);
+		this.clientConnection.start(device, TestConnection.UUID);
 	}
 	
 	private void addHistory(final String text)
@@ -74,7 +74,7 @@ public class ChatScreen extends Activity implements ConnectionInterface
 	
 	private void disconnect()
 	{
-		this.connectionManager.close();
+		this.clientConnection.close();
 		finish();
 	}
 	
@@ -89,7 +89,7 @@ public class ChatScreen extends Activity implements ConnectionInterface
 		EditText editText = (EditText)findViewById(R.id.message);
 		String message = editText.getText().toString();
 		
-		this.connectionManager.send(message.getBytes());
+		this.clientConnection.send(message.getBytes());
 		
 		addHistory(">>> " + message);
 		
