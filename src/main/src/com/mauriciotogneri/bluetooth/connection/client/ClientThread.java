@@ -26,7 +26,7 @@ public class ClientThread extends Thread
 		}
 		catch (Exception e)
 		{
-			this.clientConnection.errorConnecting();
+			this.clientConnection.onErrorConnecting();
 		}
 		
 		return result;
@@ -43,7 +43,7 @@ public class ClientThread extends Thread
 		}
 		catch (Exception e)
 		{
-			this.clientConnection.errorConnecting();
+			this.clientConnection.onErrorConnecting();
 			
 			close();
 		}

@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
-public class ClientConnection
+public class ClientConnection implements ClientEvent
 {
 	private final ClientEvent clientEvent;
 	private ClientThread clientThread;
@@ -43,20 +43,39 @@ public class ClientConnection
 	{
 		try
 		{
-			this.clientLink = new ClientLink(socket, this.clientEvent);
+			this.clientLink = new ClientLink(socket, this);
 			this.clientLink.start();
 			
-			this.clientEvent.onConnect();
+			onConnect();
 		}
 		catch (ConnectionException e)
 		{
-			this.clientEvent.onErrorConnecting();
+			onErrorConnecting();
 		}
 	}
 	
-	void errorConnecting()
+	@Override
+	public void onReceive(byte[] message)
+	{
+		this.clientEvent.onReceive(message);
+	}
+	
+	@Override
+	public void onConnect()
+	{
+		this.clientEvent.onConnect();
+	}
+	
+	@Override
+	public void onErrorConnecting()
 	{
 		this.clientEvent.onErrorConnecting();
+	}
+	
+	@Override
+	public void onDisconnect()
+	{
+		this.clientEvent.onDisconnect();
 	}
 	
 	public boolean send(byte[] message)
