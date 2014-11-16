@@ -55,6 +55,20 @@ public class ServerConnection
 		}
 	}
 	
+	public String getDeviceName()
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		return (bluetoothAdapter == null) ? "" : bluetoothAdapter.getName();
+	}
+	
+	public String getDeviceAddress()
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		return (bluetoothAdapter == null) ? "" : bluetoothAdapter.getAddress();
+	}
+	
 	void clientConnected(BluetoothSocket socket, ServerThread serverThread)
 	{
 		try

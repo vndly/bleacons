@@ -1,5 +1,6 @@
 package com.mauriciotogneri.bluetooth.connection.client;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
@@ -22,6 +23,20 @@ public class ClientConnection
 			this.clientThread = new ClientThread(this, device, uuid);
 			this.clientThread.start();
 		}
+	}
+	
+	public String getDeviceName()
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		return (bluetoothAdapter == null) ? "" : bluetoothAdapter.getName();
+	}
+	
+	public String getDeviceAddress()
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		return (bluetoothAdapter == null) ? "" : bluetoothAdapter.getAddress();
 	}
 	
 	void connected(BluetoothSocket socket)
