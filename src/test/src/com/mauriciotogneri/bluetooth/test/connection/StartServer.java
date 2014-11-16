@@ -66,7 +66,7 @@ public class StartServer extends Activity implements ServerEvent
 		this.serverConnection.listen(TestConnection.UUID, StartServer.VISIBILITY_DURATION);
 	}
 	
-	private void deviceSelected(BluetoothDevice device)
+	private void deviceSelected(final BluetoothDevice device)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setIcon(android.R.drawable.ic_menu_send);
@@ -84,7 +84,7 @@ public class StartServer extends Activity implements ServerEvent
 			{
 				EditText editText = (EditText)layout.findViewById(R.id.message);
 				
-				send(editText.getText().toString());
+				send(device, editText.getText().toString());
 			}
 		});
 		
@@ -94,9 +94,9 @@ public class StartServer extends Activity implements ServerEvent
 		alert.show();
 	}
 	
-	private void send(String message)
+	private void send(BluetoothDevice device, String message)
 	{
-		this.serverConnection.send(message.getBytes());
+		this.serverConnection.send(device, message.getBytes());
 		
 		addHistory(">>> " + message);
 	}
