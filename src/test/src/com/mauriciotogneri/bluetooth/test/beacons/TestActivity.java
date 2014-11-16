@@ -7,7 +7,7 @@ import android.util.Log;
 import com.mauriciotogneri.bluetooth.beacons.Beacon;
 import com.mauriciotogneri.bluetooth.beacons.BeaconListener;
 import com.mauriciotogneri.bluetooth.beacons.BeaconManager;
-import com.mauriciotogneri.bluetooth.beacons.filters.IBeaconFilter;
+import com.mauriciotogneri.bluetooth.beacons.custom.IBeacon;
 import com.mauriciotogneri.bluetooth.test.R;
 
 public class TestActivity extends Activity implements BeaconListener
@@ -21,7 +21,7 @@ public class TestActivity extends Activity implements BeaconListener
 		setContentView(R.layout.activity_connection);
 		
 		this.beaconManager = new BeaconManager(this, 1000);
-		this.beaconManager.addFilter(new IBeaconFilter());
+		this.beaconManager.addFilter(new IBeacon.Filter());
 		this.beaconManager.addListener(this);
 		this.beaconManager.start();
 	}
