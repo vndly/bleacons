@@ -12,7 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
-public class ServerConnection
+public class ServerConnection implements ServerEvent
 {
 	private final ServerEvent serverEvent;
 	private final Context context;
@@ -59,6 +59,31 @@ public class ServerConnection
 		}
 	}
 	
+	@Override
+	public void onReceive(BluetoothDevice device, byte[] message)
+	{
+		this.serverEvent.onReceive(device, message);
+	}
+	
+	@Override
+	public void onConnect(BluetoothDevice device)
+	{
+		this.serverEvent.onConnect(device);
+	}
+	
+	@Override
+	public void onErrorOpeningConnection()
+	{
+		this.serverEvent.onErrorOpeningConnection();
+	}
+	
+	@Override
+	public void onDisconnect(BluetoothDevice device)
+	{
+		removeConnection(device);
+		this.serverEvent.onDisconnect(device);
+	}
+	
 	public String getDeviceName()
 	{
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -79,18 +104,18 @@ public class ServerConnection
 		{
 			removeServerThread(serverThread);
 			
-			ServerLink serverLink = new ServerLink(socket, this.serverEvent);
+			ServerLink serverLink = new ServerLink(socket, this);
 			serverLink.start();
 			
 			BluetoothDevice device = socket.getRemoteDevice();
 			
 			addConnection(device, serverLink);
 			
-			this.serverEvent.onConnect(device);
+			onConnect(device);
 		}
 		catch (ConnectionException e)
 		{
-			this.serverEvent.onErrorOpeningConnection();
+			onErrorOpeningConnection();
 		}
 	}
 	
@@ -98,7 +123,7 @@ public class ServerConnection
 	{
 		removeServerThread(serverThread);
 		
-		this.serverEvent.onErrorOpeningConnection();
+		onErrorOpeningConnection();
 	}
 	
 	public boolean send(BluetoothDevice device, byte[] message)
@@ -139,6 +164,14 @@ public class ServerConnection
 		}
 	}
 	
+	private void removeConnection(BluetoothDevice device)
+	{
+		synchronized (this.connectionsLock)
+		{
+			this.connections.remove(device);
+		}
+	}
+	
 	private ServerLink getConnection(BluetoothDevice device)
 	{
 		ServerLink result = null;
@@ -146,6 +179,18 @@ public class ServerConnection
 		synchronized (this.connectionsLock)
 		{
 			result = this.connections.get(device);
+		}
+		
+		return result;
+	}
+	
+	public int getNumberOfConnections()
+	{
+		int result = 0;
+		
+		synchronized (this.connectionsLock)
+		{
+			result = this.connections.size();
 		}
 		
 		return result;
