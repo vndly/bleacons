@@ -53,7 +53,7 @@ public class ChatScreen extends Activity implements ConnectionEvent
 		BluetoothDevice device = getIntent().getExtras().getParcelable(ChatScreen.PARAMETER_DEVICE);
 		
 		this.clientConnection = new ClientConnection(this);
-		this.clientConnection.start(device, TestConnection.UUID);
+		this.clientConnection.connect(device, TestConnection.UUID);
 	}
 	
 	private void addHistory(final String text)

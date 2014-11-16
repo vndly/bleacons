@@ -62,8 +62,8 @@ public class StartServer extends Activity implements ConnectionEvent
 			}
 		});
 		
-		this.serverConnection = new ServerConnection(this);
-		this.serverConnection.start(this, TestConnection.UUID, StartServer.VISIBILITY_DURATION);
+		this.serverConnection = new ServerConnection(this, this);
+		this.serverConnection.listen(TestConnection.UUID, StartServer.VISIBILITY_DURATION);
 	}
 	
 	private void deviceSelected(BluetoothDevice device)
