@@ -1,6 +1,7 @@
 package com.mauriciotogneri.bluetooth.beacons;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,11 +97,17 @@ public class BeaconService extends Service implements LeScanCallback
 		{
 			log("FINISHED SCANNING CYCLE");
 			
-			List<Beacon> list = new ArrayList<Beacon>();
+			List<Beacon> beaconsList = new ArrayList<Beacon>();
 			
 			synchronized (this.currentBeaconsLock)
 			{
-				list.addAll(this.currentBeacons.values());
+				Collection<Beacon> beacons = this.currentBeacons.values();
+				
+				for (Beacon beacon : beacons)
+				{
+					beaconsList.add(beacon);
+				}
+				
 				this.currentBeacons.clear();
 			}
 			
@@ -108,7 +115,7 @@ public class BeaconService extends Service implements LeScanCallback
 			{
 				for (BeaconListener listener : this.listeners)
 				{
-					listener.onReceive(list);
+					listener.onReceive(beaconsList);
 				}
 			}
 		}
