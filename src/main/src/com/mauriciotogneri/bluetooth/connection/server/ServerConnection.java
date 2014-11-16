@@ -16,7 +16,11 @@ public class ServerConnection
 {
 	private final ServerEvent serverEvent;
 	private final Context context;
+	
+	private final Object serverThreadLock = new Object();
 	private final Set<ServerThread> serverThreads = new HashSet<ServerThread>();
+	
+	private final Object connectionsLock = new Object();
 	private final Map<BluetoothDevice, ServerLink> connections = new HashMap<BluetoothDevice, ServerLink>();
 	
 	public ServerConnection(ServerEvent serverEvent, Context context)
@@ -34,7 +38,7 @@ public class ServerConnection
 			ServerThread serverThread = new ServerThread(this, uuid);
 			serverThread.start();
 			
-			this.serverThreads.add(serverThread);
+			addServerThread(serverThread);
 		}
 	}
 	
@@ -73,14 +77,14 @@ public class ServerConnection
 	{
 		try
 		{
-			this.serverThreads.remove(serverThread);
+			removeServerThread(serverThread);
 			
 			ServerLink serverLink = new ServerLink(socket, this.serverEvent);
 			serverLink.start();
 			
 			BluetoothDevice device = socket.getRemoteDevice();
 			
-			this.connections.put(device, serverLink);
+			addConnection(device, serverLink);
 			
 			this.serverEvent.onConnect(device);
 		}
@@ -92,7 +96,7 @@ public class ServerConnection
 	
 	void errorOpeningConnection(ServerThread serverThread)
 	{
-		this.serverThreads.remove(serverThread);
+		removeServerThread(serverThread);
 		
 		this.serverEvent.onErrorOpeningConnection();
 	}
@@ -101,10 +105,47 @@ public class ServerConnection
 	{
 		boolean result = false;
 		
-		if (this.connections.containsKey(device))
+		ServerLink serverLink = getConnection(device);
+		
+		if (serverLink != null)
 		{
-			ServerLink serverLink = this.connections.get(device);
 			result = serverLink.send(message);
+		}
+		
+		return result;
+	}
+	
+	private void addServerThread(ServerThread serverThread)
+	{
+		synchronized (this.serverThreadLock)
+		{
+			this.serverThreads.add(serverThread);
+		}
+	}
+	
+	private void removeServerThread(ServerThread serverThread)
+	{
+		synchronized (this.serverThreadLock)
+		{
+			this.serverThreads.remove(serverThread);
+		}
+	}
+	
+	private void addConnection(BluetoothDevice device, ServerLink serverLink)
+	{
+		synchronized (this.connectionsLock)
+		{
+			this.connections.put(device, serverLink);
+		}
+	}
+	
+	private ServerLink getConnection(BluetoothDevice device)
+	{
+		ServerLink result = null;
+		
+		synchronized (this.connectionsLock)
+		{
+			result = this.connections.get(device);
 		}
 		
 		return result;
@@ -112,18 +153,24 @@ public class ServerConnection
 	
 	public void close()
 	{
-		for (ServerThread serverThread : this.serverThreads)
+		synchronized (this.serverThreadLock)
 		{
-			serverThread.close();
+			for (ServerThread serverThread : this.serverThreads)
+			{
+				serverThread.close();
+			}
 		}
 		
-		Collection<ServerLink> links = this.connections.values();
-		
-		for (ServerLink link : links)
+		synchronized (this.connectionsLock)
 		{
-			link.close();
+			Collection<ServerLink> links = this.connections.values();
+			
+			for (ServerLink link : links)
+			{
+				link.close();
+			}
+			
+			this.connections.clear();
 		}
-		
-		this.connections.clear();
 	}
 }

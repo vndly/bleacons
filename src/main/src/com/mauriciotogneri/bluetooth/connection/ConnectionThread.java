@@ -12,6 +12,7 @@ public abstract class ConnectionThread extends Thread
 	private final BluetoothSocket socket;
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
+	private boolean connected = false;
 	
 	private static final int BUFFER_SIZE = 1024;
 	
@@ -20,6 +21,7 @@ public abstract class ConnectionThread extends Thread
 		this.socket = socket;
 		this.inputStream = getInputStream(socket);
 		this.outputStream = getOutputStream(socket);
+		this.connected = true;
 	}
 	
 	private InputStream getInputStream(BluetoothSocket socket) throws ConnectionException
@@ -76,6 +78,7 @@ public abstract class ConnectionThread extends Thread
 			}
 		}
 		
+		this.connected = false;
 		onDisconnect(device);
 	}
 	
@@ -87,14 +90,17 @@ public abstract class ConnectionThread extends Thread
 	{
 		boolean result = false;
 		
-		try
+		if (this.connected)
 		{
-			this.outputStream.write(bytes);
-			
-			result = true;
-		}
-		catch (Exception e)
-		{
+			try
+			{
+				this.outputStream.write(bytes);
+				
+				result = true;
+			}
+			catch (Exception e)
+			{
+			}
 		}
 		
 		return result;
