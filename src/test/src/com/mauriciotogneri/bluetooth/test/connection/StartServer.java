@@ -146,7 +146,7 @@ public class StartServer extends Activity implements ServerEvent
 	}
 	
 	@Override
-	public void onClientConnect(final BluetoothDevice device)
+	public void onConnect(final BluetoothDevice device)
 	{
 		addHistory("Device connected: " + device.getName() + " - " + device.getAddress());
 		
@@ -161,7 +161,7 @@ public class StartServer extends Activity implements ServerEvent
 	}
 	
 	@Override
-	public void onClientDisconnect(final BluetoothDevice device)
+	public void onDisconnect(final BluetoothDevice device)
 	{
 		addHistory("Device disconnected: " + device.getName() + " - " + device.getAddress());
 		
@@ -173,5 +173,11 @@ public class StartServer extends Activity implements ServerEvent
 				removeDevice(device);
 			}
 		});
+	}
+	
+	@Override
+	public void onErrorOpeningConnection()
+	{
+		addHistory("Error opening connection...");
 	}
 }
