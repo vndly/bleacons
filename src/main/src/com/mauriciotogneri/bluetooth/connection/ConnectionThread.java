@@ -86,7 +86,7 @@ public abstract class ConnectionThread extends Thread
 	
 	protected abstract void onDisconnect(BluetoothDevice device);
 	
-	public boolean send(byte[] bytes)
+	public boolean send(byte[] message)
 	{
 		boolean result = false;
 		
@@ -94,7 +94,7 @@ public abstract class ConnectionThread extends Thread
 		{
 			try
 			{
-				this.outputStream.write(bytes);
+				this.outputStream.write(message);
 				
 				result = true;
 			}

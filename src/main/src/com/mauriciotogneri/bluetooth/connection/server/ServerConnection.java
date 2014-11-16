@@ -140,6 +140,31 @@ public class ServerConnection implements ServerEvent
 		return result;
 	}
 	
+	public boolean sendAll(BluetoothDevice device, byte[] message)
+	{
+		boolean result = false;
+		
+		synchronized (this.connectionsLock)
+		{
+			Set<BluetoothDevice> links = this.connections.keySet();
+			
+			for (BluetoothDevice link : links)
+			{
+				if (link != device)
+				{
+					result |= this.connections.get(link).send(message);
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean sendAll(byte[] message)
+	{
+		return sendAll(null, message);
+	}
+	
 	private void addServerThread(ServerThread serverThread)
 	{
 		synchronized (this.serverThreadLock)
