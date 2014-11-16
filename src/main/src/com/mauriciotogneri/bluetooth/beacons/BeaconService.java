@@ -66,13 +66,16 @@ public class BeaconService extends Service implements LeScanCallback
 		
 		log("BEACON SCANNED: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + scanRecord.length);
 		
-		for (BeaconFilter filter : this.filters)
+		synchronized (this.filters)
 		{
-			Beacon beacon = filter.getBeacon(macAddress, rssi, scanRecord);
-			
-			if (beacon != null)
+			for (BeaconFilter filter : this.filters)
 			{
-				this.currentBeacons.put(macAddress, beacon);
+				Beacon beacon = filter.getBeacon(macAddress, rssi, scanRecord);
+				
+				if (beacon != null)
+				{
+					this.currentBeacons.put(macAddress, beacon);
+				}
 			}
 		}
 	}
@@ -86,9 +89,12 @@ public class BeaconService extends Service implements LeScanCallback
 			List<Beacon> list = new ArrayList<Beacon>();
 			list.addAll(this.currentBeacons.values());
 			
-			for (BeaconListener listener : this.listeners)
+			synchronized (this.listeners)
 			{
-				listener.onReceive(list);
+				for (BeaconListener listener : this.listeners)
+				{
+					listener.onReceive(list);
+				}
 			}
 			
 			this.currentBeacons.clear();

@@ -1,6 +1,7 @@
 package com.mauriciotogneri.bluetooth.beacons;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,8 +15,8 @@ import com.mauriciotogneri.bluetooth.beacons.BeaconService.BeaconBinder;
 public class BeaconManager
 {
 	private final Context context;
-	private final List<BeaconFilter> filters = new ArrayList<BeaconFilter>();
-	private final List<BeaconListener> listeners = new ArrayList<BeaconListener>();
+	private final List<BeaconFilter> filters = Collections.synchronizedList(new ArrayList<BeaconFilter>());
+	private final List<BeaconListener> listeners = Collections.synchronizedList(new ArrayList<BeaconListener>());
 	private final int scanFrequency;
 	private boolean isConnected = false;
 	private BeaconService beaconService;
