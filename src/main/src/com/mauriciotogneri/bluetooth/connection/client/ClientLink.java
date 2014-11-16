@@ -1,15 +1,15 @@
 package com.mauriciotogneri.bluetooth.connection.client;
 
+import java.io.IOException;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import com.mauriciotogneri.bluetooth.connection.ConnectionThread;
-import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
+import com.mauriciotogneri.bluetooth.connection.kernel.ConnectionThread;
 
 public class ClientLink extends ConnectionThread
 {
 	private final ClientEvent clientEvent;
 	
-	public ClientLink(BluetoothSocket socket, ClientEvent clientEvent) throws ConnectionException
+	public ClientLink(BluetoothSocket socket, ClientEvent clientEvent) throws IOException
 	{
 		super(socket);
 		

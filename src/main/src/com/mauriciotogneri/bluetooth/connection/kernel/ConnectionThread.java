@@ -1,11 +1,11 @@
-package com.mauriciotogneri.bluetooth.connection;
+package com.mauriciotogneri.bluetooth.connection.kernel;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
 public abstract class ConnectionThread extends Thread
 {
@@ -16,44 +16,12 @@ public abstract class ConnectionThread extends Thread
 	
 	private static final int BUFFER_SIZE = 1024;
 	
-	public ConnectionThread(BluetoothSocket socket) throws ConnectionException
+	public ConnectionThread(BluetoothSocket socket) throws IOException
 	{
 		this.socket = socket;
-		this.inputStream = getInputStream(socket);
-		this.outputStream = getOutputStream(socket);
+		this.inputStream = socket.getInputStream();
+		this.outputStream = socket.getOutputStream();
 		this.connected = true;
-	}
-	
-	private InputStream getInputStream(BluetoothSocket socket) throws ConnectionException
-	{
-		InputStream result = null;
-		
-		try
-		{
-			result = socket.getInputStream();
-		}
-		catch (Exception e)
-		{
-			throw new ConnectionException(e);
-		}
-		
-		return result;
-	}
-	
-	private OutputStream getOutputStream(BluetoothSocket socket) throws ConnectionException
-	{
-		OutputStream result = null;
-		
-		try
-		{
-			result = socket.getOutputStream();
-		}
-		catch (Exception e)
-		{
-			throw new ConnectionException(e);
-		}
-		
-		return result;
 	}
 	
 	@Override

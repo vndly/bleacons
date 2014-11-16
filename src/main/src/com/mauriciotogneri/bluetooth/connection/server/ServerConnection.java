@@ -10,7 +10,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
 public class ServerConnection implements ServerEvent
 {
@@ -116,7 +115,7 @@ public class ServerConnection implements ServerEvent
 			
 			onConnect(device);
 		}
-		catch (ConnectionException e)
+		catch (Exception e)
 		{
 			onErrorOpeningConnection();
 		}

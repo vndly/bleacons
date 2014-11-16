@@ -3,7 +3,6 @@ package com.mauriciotogneri.bluetooth.connection.client;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
 public class ClientConnection implements ClientEvent
 {
@@ -48,7 +47,7 @@ public class ClientConnection implements ClientEvent
 			
 			onConnect();
 		}
-		catch (ConnectionException e)
+		catch (Exception e)
 		{
 			onErrorConnecting();
 		}
