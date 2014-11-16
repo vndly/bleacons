@@ -44,9 +44,7 @@ public class ClientThread extends Thread
 		catch (Exception e)
 		{
 			this.clientConnection.errorConnecting();
-		}
-		finally
-		{
+			
 			close();
 		}
 	}

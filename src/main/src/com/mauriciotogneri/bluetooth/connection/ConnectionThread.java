@@ -71,6 +71,7 @@ public abstract class ConnectionThread extends Thread
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 				break;
 			}
 		}
