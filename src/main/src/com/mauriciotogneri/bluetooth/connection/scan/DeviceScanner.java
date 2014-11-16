@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bluetooth.connection;
+package com.mauriciotogneri.bluetooth.connection.scan;
 
 import android.bluetooth.BluetoothDevice;
 

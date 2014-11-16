@@ -2,7 +2,7 @@ package com.mauriciotogneri.bluetooth.connection;
 
 import android.bluetooth.BluetoothDevice;
 
-public interface ConnectionInterface
+public interface ConnectionEvent
 {
 	void onReceive(BluetoothDevice device, byte[] message);
 	

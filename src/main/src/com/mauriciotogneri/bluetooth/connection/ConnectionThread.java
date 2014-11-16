@@ -1,6 +1,5 @@
 package com.mauriciotogneri.bluetooth.connection;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -9,31 +8,51 @@ import android.bluetooth.BluetoothSocket;
 
 public class ConnectionThread extends Thread
 {
-	private BluetoothSocket socket;
-	private BluetoothDevice device;
-	private InputStream inputStream;
-	private OutputStream outputStream;
-	private ConnectionInterface connectionInterface;
+	private final BluetoothSocket socket;
+	private final InputStream inputStream;
+	private final OutputStream outputStream;
+	private final ConnectionEvent connectionEvent;
 	
 	private static final int BUFFER_SIZE = 1024;
 	
-	public void initialize(BluetoothSocket socket, ConnectionInterface connectionInterface)
+	public ConnectionThread(BluetoothSocket socket, ConnectionEvent connectionEvent)
 	{
 		this.socket = socket;
-		this.device = socket.getRemoteDevice();
-		this.connectionInterface = connectionInterface;
+		this.inputStream = getInputStream(socket);
+		this.outputStream = getOutputStream(socket);
+		this.connectionEvent = connectionEvent;
+	}
+	
+	private InputStream getInputStream(BluetoothSocket socket)
+	{
+		InputStream result = null;
 		
 		try
 		{
-			this.inputStream = socket.getInputStream();
-			this.outputStream = socket.getOutputStream();
+			result = socket.getInputStream();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 		
-		start();
+		return result;
+	}
+	
+	private OutputStream getOutputStream(BluetoothSocket socket)
+	{
+		OutputStream result = null;
+		
+		try
+		{
+			result = socket.getOutputStream();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	@Override
@@ -41,39 +60,38 @@ public class ConnectionThread extends Thread
 	{
 		byte[] buffer = new byte[ConnectionThread.BUFFER_SIZE];
 		
+		BluetoothDevice device = this.socket.getRemoteDevice();
+		
 		while (true)
 		{
 			try
 			{
 				int bytes = this.inputStream.read(buffer);
 				
-				this.connectionInterface.onReceive(this.device, Arrays.copyOfRange(buffer, 0, bytes));
+				this.connectionEvent.onReceive(device, Arrays.copyOfRange(buffer, 0, bytes));
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 				break;
 			}
 		}
 		
-		this.connectionInterface.onDisconnect(this.device);
+		this.connectionEvent.onDisconnect(device);
 	}
 	
 	public boolean send(byte[] bytes)
 	{
 		boolean result = false;
 		
-		if (this.outputStream != null)
+		try
 		{
-			try
-			{
-				this.outputStream.write(bytes);
-				
-				result = true;
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			this.outputStream.write(bytes);
+			
+			result = true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 		
 		return result;
@@ -81,16 +99,13 @@ public class ConnectionThread extends Thread
 	
 	public void close()
 	{
-		if (this.socket != null)
+		try
 		{
-			try
-			{
-				this.socket.close();
-			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
+			this.socket.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 }
