@@ -1,6 +1,12 @@
 package com.mauriciotogneri.bluetooth.connection.server;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +16,8 @@ public class ServerConnection
 {
 	private final ServerEvent serverEvent;
 	private final Context context;
-	private ServerThread serverThread;
-	private ServerLink serverLink;
+	private final Set<ServerThread> serverThreads = new HashSet<ServerThread>();
+	private final Map<BluetoothDevice, ServerLink> connections = new HashMap<BluetoothDevice, ServerLink>();
 	
 	public ServerConnection(ServerEvent serverEvent, Context context)
 	{
@@ -19,25 +25,50 @@ public class ServerConnection
 		this.context = context;
 	}
 	
-	public void listen(String uuid, int duration)
+	public void listen(String uuid, int numberOfConnections, int duration)
 	{
-		if (this.serverThread == null)
+		makeVisible(duration);
+		
+		for (int i = 0; i < numberOfConnections; i++)
 		{
-			makeVisible(duration);
+			ServerThread serverThread = new ServerThread(this, uuid);
+			serverThread.start();
 			
-			this.serverThread = new ServerThread(this, uuid);
-			this.serverThread.start();
+			this.serverThreads.add(serverThread);
 		}
 	}
 	
-	void clientConnected(BluetoothSocket socket)
+	public void listen(String uuid, int duration)
+	{
+		listen(uuid, 1, duration);
+	}
+	
+	public void makeVisible(int duration)
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		if ((bluetoothAdapter != null) && (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
+		{
+			Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+			intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
+			this.context.startActivity(intent);
+		}
+	}
+	
+	void clientConnected(BluetoothSocket socket, ServerThread serverThread)
 	{
 		try
 		{
-			this.serverLink = new ServerLink(socket, this.serverEvent);
-			this.serverLink.start();
+			this.serverThreads.remove(serverThread);
 			
-			this.serverEvent.onConnect(socket.getRemoteDevice());
+			ServerLink serverLink = new ServerLink(socket, this.serverEvent);
+			serverLink.start();
+			
+			BluetoothDevice device = socket.getRemoteDevice();
+			
+			this.connections.put(device, serverLink);
+			
+			this.serverEvent.onConnect(device);
 		}
 		catch (ConnectionException e)
 		{
@@ -45,25 +76,21 @@ public class ServerConnection
 		}
 	}
 	
-	void errorOpeningConnection()
+	void errorOpeningConnection(ServerThread serverThread)
 	{
+		this.serverThreads.remove(serverThread);
+		
 		this.serverEvent.onErrorOpeningConnection();
 	}
 	
-	public void makeVisible(int duration)
-	{
-		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
-		this.context.startActivity(intent);
-	}
-	
-	public boolean send(byte[] message)
+	public boolean send(BluetoothDevice device, byte[] message)
 	{
 		boolean result = false;
 		
-		if (this.serverLink != null)
+		if (this.connections.containsKey(device))
 		{
-			result = this.serverLink.send(message);
+			ServerLink serverLink = this.connections.get(device);
+			result = serverLink.send(message);
 		}
 		
 		return result;
@@ -71,14 +98,18 @@ public class ServerConnection
 	
 	public void close()
 	{
-		if (this.serverThread != null)
+		for (ServerThread serverThread : this.serverThreads)
 		{
-			this.serverThread.close();
+			serverThread.close();
 		}
 		
-		if (this.serverLink != null)
+		Collection<ServerLink> links = this.connections.values();
+		
+		for (ServerLink link : links)
 		{
-			this.serverLink.close();
+			link.close();
 		}
+		
+		this.connections.clear();
 	}
 }

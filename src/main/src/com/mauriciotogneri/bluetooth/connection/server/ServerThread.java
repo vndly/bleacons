@@ -34,7 +34,7 @@ public class ServerThread extends Thread
 		}
 		catch (Exception e)
 		{
-			this.serverConnection.errorOpeningConnection();
+			this.serverConnection.errorOpeningConnection(this);
 		}
 		
 		return result;
@@ -48,11 +48,11 @@ public class ServerThread extends Thread
 			@SuppressWarnings("resource")
 			BluetoothSocket socket = this.serverSocket.accept();
 			
-			this.serverConnection.clientConnected(socket);
+			this.serverConnection.clientConnected(socket, this);
 		}
 		catch (Exception e)
 		{
-			this.serverConnection.errorOpeningConnection();
+			this.serverConnection.errorOpeningConnection(this);
 		}
 		finally
 		{
