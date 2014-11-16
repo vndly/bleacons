@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
@@ -16,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+@TargetApi(18)
 public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
@@ -66,11 +68,10 @@ public class BeaconService extends Service implements LeScanCallback
 		
 		for (BeaconFilter filter : this.filters)
 		{
-			BeaconData data = filter.getBeaconData(scanRecord);
+			Beacon beacon = filter.getBeacon(macAddress, rssi, scanRecord);
 			
-			if (data != null)
+			if (beacon != null)
 			{
-				Beacon beacon = new Beacon(macAddress, data, rssi);
 				this.currentBeacons.put(macAddress, beacon);
 			}
 		}

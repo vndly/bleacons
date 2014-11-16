@@ -2,5 +2,5 @@ package com.mauriciotogneri.bluetooth.beacons;
 
 public interface BeaconFilter
 {
-	BeaconData getBeaconData(byte[] data);
+	Beacon getBeacon(String macAddress, int rssi, byte[] data);
 }
