@@ -26,7 +26,7 @@ public class ClientThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			this.clientConnection.errorConnecting();
 		}
 		
 		return result;
@@ -43,13 +43,14 @@ public class ClientThread extends Thread
 		}
 		catch (Exception connectException)
 		{
+			this.clientConnection.errorConnecting();
+			
 			try
 			{
 				this.socket.close();
 			}
 			catch (Exception closeException)
 			{
-				closeException.printStackTrace();
 			}
 		}
 	}
@@ -62,7 +63,6 @@ public class ClientThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 		}
 	}
 }

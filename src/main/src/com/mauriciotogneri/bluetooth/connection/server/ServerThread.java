@@ -3,6 +3,7 @@ package com.mauriciotogneri.bluetooth.connection.server;
 import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 
 public class ServerThread extends Thread
 {
@@ -33,7 +34,7 @@ public class ServerThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			this.serverConnection.clientErrorConnecting();
 		}
 		
 		return result;
@@ -44,10 +45,14 @@ public class ServerThread extends Thread
 	{
 		try
 		{
-			this.serverConnection.connected(this.serverSocket.accept());
+			@SuppressWarnings("resource")
+			BluetoothSocket socket = this.serverSocket.accept();
+			
+			this.serverConnection.clientConnected(socket);
 		}
 		catch (Exception connectException)
 		{
+			// TODO
 			connectException.printStackTrace();
 		}
 		finally
@@ -58,7 +63,6 @@ public class ServerThread extends Thread
 			}
 			catch (Exception closeException)
 			{
-				closeException.printStackTrace();
 			}
 		}
 	}
@@ -71,7 +75,6 @@ public class ServerThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 		}
 	}
 }

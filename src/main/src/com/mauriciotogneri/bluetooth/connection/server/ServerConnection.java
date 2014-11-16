@@ -4,19 +4,18 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
-import com.mauriciotogneri.bluetooth.connection.ConnectionThread;
+import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
 public class ServerConnection
 {
-	private final ConnectionEvent connectionEvent;
+	private final ServerEvent serverEvent;
 	private final Context context;
 	private ServerThread serverThread;
-	private ConnectionThread connectionThread;
+	private ServerLink serverLink;
 	
-	public ServerConnection(ConnectionEvent connectionEvent, Context context)
+	public ServerConnection(ServerEvent serverEvent, Context context)
 	{
-		this.connectionEvent = connectionEvent;
+		this.serverEvent = serverEvent;
 		this.context = context;
 	}
 	
@@ -31,12 +30,23 @@ public class ServerConnection
 		}
 	}
 	
-	void connected(BluetoothSocket socket)
+	void clientConnected(BluetoothSocket socket)
 	{
-		this.connectionEvent.onConnect(socket.getRemoteDevice());
+		try
+		{
+			this.serverLink = new ServerLink(socket, this.serverEvent);
+			this.serverLink.start();
+			
+			this.serverEvent.onClientConnect(socket.getRemoteDevice());
+		}
+		catch (ConnectionException e)
+		{
+		}
+	}
+	
+	void clientErrorConnecting()
+	{
 		
-		this.connectionThread = new ConnectionThread(socket, this.connectionEvent);
-		this.connectionThread.start();
 	}
 	
 	public void makeVisible(int duration)
@@ -50,9 +60,9 @@ public class ServerConnection
 	{
 		boolean result = false;
 		
-		if (this.connectionThread != null)
+		if (this.serverLink != null)
 		{
-			result = this.connectionThread.send(message);
+			result = this.serverLink.send(message);
 		}
 		
 		return result;
@@ -65,9 +75,9 @@ public class ServerConnection
 			this.serverThread.close();
 		}
 		
-		if (this.connectionThread != null)
+		if (this.serverLink != null)
 		{
-			this.connectionThread.close();
+			this.serverLink.close();
 		}
 	}
 }

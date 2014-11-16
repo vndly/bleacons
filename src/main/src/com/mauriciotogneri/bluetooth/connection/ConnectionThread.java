@@ -5,25 +5,24 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
-public class ConnectionThread extends Thread
+public abstract class ConnectionThread extends Thread
 {
 	private final BluetoothSocket socket;
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
-	private final ConnectionEvent connectionEvent;
 	
 	private static final int BUFFER_SIZE = 1024;
 	
-	public ConnectionThread(BluetoothSocket socket, ConnectionEvent connectionEvent)
+	public ConnectionThread(BluetoothSocket socket) throws ConnectionException
 	{
 		this.socket = socket;
 		this.inputStream = getInputStream(socket);
 		this.outputStream = getOutputStream(socket);
-		this.connectionEvent = connectionEvent;
 	}
 	
-	private InputStream getInputStream(BluetoothSocket socket)
+	private InputStream getInputStream(BluetoothSocket socket) throws ConnectionException
 	{
 		InputStream result = null;
 		
@@ -33,13 +32,13 @@ public class ConnectionThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		}
 		
 		return result;
 	}
 	
-	private OutputStream getOutputStream(BluetoothSocket socket)
+	private OutputStream getOutputStream(BluetoothSocket socket) throws ConnectionException
 	{
 		OutputStream result = null;
 		
@@ -49,7 +48,7 @@ public class ConnectionThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw new ConnectionException(e);
 		}
 		
 		return result;
@@ -68,7 +67,7 @@ public class ConnectionThread extends Thread
 			{
 				int bytes = this.inputStream.read(buffer);
 				
-				this.connectionEvent.onReceive(device, Arrays.copyOfRange(buffer, 0, bytes));
+				onReceive(device, Arrays.copyOfRange(buffer, 0, bytes));
 			}
 			catch (Exception e)
 			{
@@ -76,8 +75,12 @@ public class ConnectionThread extends Thread
 			}
 		}
 		
-		this.connectionEvent.onDisconnect(device);
+		onDisconnect(device);
 	}
+	
+	protected abstract void onReceive(BluetoothDevice device, byte[] message);
+	
+	protected abstract void onDisconnect(BluetoothDevice device);
 	
 	public boolean send(byte[] bytes)
 	{
@@ -91,7 +94,6 @@ public class ConnectionThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 		}
 		
 		return result;
@@ -105,7 +107,6 @@ public class ConnectionThread extends Thread
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
 		}
 	}
 }

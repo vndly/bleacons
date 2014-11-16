@@ -2,18 +2,17 @@ package com.mauriciotogneri.bluetooth.connection.client;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
-import com.mauriciotogneri.bluetooth.connection.ConnectionThread;
+import com.mauriciotogneri.bluetooth.connection.exceptions.ConnectionException;
 
 public class ClientConnection
 {
-	private final ConnectionEvent connectionEvent;
+	private final ClientEvent clientEvent;
 	private ClientThread clientThread;
-	private ConnectionThread connectionThread;
+	private ClientLink clientLink;
 	
-	public ClientConnection(ConnectionEvent connectionEvent)
+	public ClientConnection(ClientEvent clientEvent)
 	{
-		this.connectionEvent = connectionEvent;
+		this.clientEvent = clientEvent;
 	}
 	
 	public void connect(BluetoothDevice device, String uuid)
@@ -27,19 +26,30 @@ public class ClientConnection
 	
 	void connected(BluetoothSocket socket)
 	{
-		this.connectionEvent.onConnect(socket.getRemoteDevice());
-		
-		this.connectionThread = new ConnectionThread(socket, this.connectionEvent);
-		this.connectionThread.start();
+		try
+		{
+			this.clientLink = new ClientLink(socket, this.clientEvent);
+			this.clientLink.start();
+			
+			this.clientEvent.onConnect();
+		}
+		catch (ConnectionException e)
+		{
+		}
+	}
+	
+	void errorConnecting()
+	{
+		this.clientEvent.onErrorConnecting();
 	}
 	
 	public boolean send(byte[] message)
 	{
 		boolean result = false;
 		
-		if (this.connectionThread != null)
+		if (this.clientLink != null)
 		{
-			result = this.connectionThread.send(message);
+			result = this.clientLink.send(message);
 		}
 		
 		return result;
@@ -52,9 +62,9 @@ public class ClientConnection
 			this.clientThread.close();
 		}
 		
-		if (this.connectionThread != null)
+		if (this.clientLink != null)
 		{
-			this.connectionThread.close();
+			this.clientLink.close();
 		}
 	}
 }
