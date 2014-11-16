@@ -4,7 +4,7 @@ import java.util.UUID;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 
-public class ClientThread extends Thread
+class ClientThread extends Thread
 {
 	private final ClientConnection clientConnection;
 	private final BluetoothSocket socket;

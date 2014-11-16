@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import com.mauriciotogneri.bluetooth.connection.kernel.ConnectionThread;
 
-public class ServerLink extends ConnectionThread
+class ServerLink extends ConnectionThread
 {
 	private final ServerEvent serverEvent;
 	

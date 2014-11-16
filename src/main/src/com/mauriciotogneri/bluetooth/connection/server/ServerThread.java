@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 
-public class ServerThread extends Thread
+class ServerThread extends Thread
 {
 	private final ServerConnection serverConnection;
 	private final BluetoothServerSocket serverSocket;
