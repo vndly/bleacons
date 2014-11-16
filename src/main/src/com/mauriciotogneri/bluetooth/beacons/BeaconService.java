@@ -21,17 +21,24 @@ import android.util.Log;
 public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
+	private Object filtersLock;
 	private List<BeaconFilter> filters;
+	private Object listenersLock;
 	private List<BeaconListener> listeners;
 	private BluetoothAdapter bluetoothAdapter;
 	private boolean scanningActive = false;
 	private final Handler handler = new Handler();
+	private final Object currentBeaconsLock = new Object();
 	private final Map<String, Beacon> currentBeacons = new HashMap<String, Beacon>();
 	
-	public void startListening(int scanFrequency, List<BeaconFilter> filters, List<BeaconListener> listeners)
+	public void startListening(int scanFrequency, Object filtersLock, List<BeaconFilter> filters, Object listenersLock, List<BeaconListener> listeners)
 	{
 		this.scanFrequency = scanFrequency;
+		
+		this.filtersLock = filtersLock;
 		this.filters = filters;
+		
+		this.listenersLock = listenersLock;
 		this.listeners = listeners;
 		
 		this.scanningActive = true;
@@ -66,7 +73,7 @@ public class BeaconService extends Service implements LeScanCallback
 		
 		log("BEACON SCANNED: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + scanRecord.length);
 		
-		synchronized (this.filters)
+		synchronized (this.filtersLock)
 		{
 			for (BeaconFilter filter : this.filters)
 			{
@@ -74,7 +81,10 @@ public class BeaconService extends Service implements LeScanCallback
 				
 				if (beacon != null)
 				{
-					this.currentBeacons.put(macAddress, beacon);
+					synchronized (this.currentBeaconsLock)
+					{
+						this.currentBeacons.put(macAddress, beacon);
+					}
 				}
 			}
 		}
@@ -87,17 +97,20 @@ public class BeaconService extends Service implements LeScanCallback
 			log("FINISHED SCANNING CYCLE");
 			
 			List<Beacon> list = new ArrayList<Beacon>();
-			list.addAll(this.currentBeacons.values());
 			
-			synchronized (this.listeners)
+			synchronized (this.currentBeaconsLock)
+			{
+				list.addAll(this.currentBeacons.values());
+				this.currentBeacons.clear();
+			}
+			
+			synchronized (this.listenersLock)
 			{
 				for (BeaconListener listener : this.listeners)
 				{
 					listener.onReceive(list);
 				}
 			}
-			
-			this.currentBeacons.clear();
 		}
 	}
 	

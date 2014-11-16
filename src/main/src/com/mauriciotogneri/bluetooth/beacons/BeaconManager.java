@@ -1,7 +1,6 @@
 package com.mauriciotogneri.bluetooth.beacons;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,8 +14,10 @@ import com.mauriciotogneri.bluetooth.beacons.BeaconService.BeaconBinder;
 public class BeaconManager
 {
 	private final Context context;
-	private final List<BeaconFilter> filters = Collections.synchronizedList(new ArrayList<BeaconFilter>());
-	private final List<BeaconListener> listeners = Collections.synchronizedList(new ArrayList<BeaconListener>());
+	private final Object filtersLock = new Object();
+	private final List<BeaconFilter> filters = new ArrayList<BeaconFilter>();
+	private final Object listenersLock = new Object();
+	private final List<BeaconListener> listeners = new ArrayList<BeaconListener>();
 	private final int scanFrequency;
 	private boolean isConnected = false;
 	private BeaconService beaconService;
@@ -61,22 +62,34 @@ public class BeaconManager
 	
 	public void addFilter(BeaconFilter filter)
 	{
-		this.filters.add(filter);
+		synchronized (this.filtersLock)
+		{
+			this.filters.add(filter);
+		}
 	}
 	
 	public void removeFilter(BeaconFilter filter)
 	{
-		this.filters.remove(filter);
+		synchronized (this.filtersLock)
+		{
+			this.filters.remove(filter);
+		}
 	}
 	
 	public void addListener(BeaconListener listener)
 	{
-		this.listeners.add(listener);
+		synchronized (this.listenersLock)
+		{
+			this.listeners.add(listener);
+		}
 	}
 	
 	public void removeListener(BeaconListener listener)
 	{
-		this.listeners.remove(listener);
+		synchronized (this.listenersLock)
+		{
+			this.listeners.remove(listener);
+		}
 	}
 	
 	public void stop()
@@ -93,7 +106,7 @@ public class BeaconManager
 		BeaconBinder binder = (BeaconBinder)service;
 		this.beaconService = binder.getService();
 		
-		this.beaconService.startListening(this.scanFrequency, this.filters, this.listeners);
+		this.beaconService.startListening(this.scanFrequency, this.filtersLock, this.filters, this.listenersLock, this.listeners);
 	}
 	
 	private void onDisconnected()
