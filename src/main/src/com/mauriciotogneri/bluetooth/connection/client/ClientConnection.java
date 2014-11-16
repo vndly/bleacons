@@ -16,7 +16,7 @@ public class ClientConnection
 		this.connectionEvent = connectionEvent;
 	}
 	
-	public void start(BluetoothDevice device, String uuid)
+	public void connect(BluetoothDevice device, String uuid)
 	{
 		if (this.clientThread == null)
 		{
@@ -25,12 +25,24 @@ public class ClientConnection
 		}
 	}
 	
-	public void connected(BluetoothSocket socket)
+	void connected(BluetoothSocket socket)
 	{
 		this.connectionEvent.onConnect(socket.getRemoteDevice());
 		
 		this.connectionThread = new ConnectionThread(socket, this.connectionEvent);
 		this.connectionThread.start();
+	}
+	
+	public boolean send(byte[] message)
+	{
+		boolean result = false;
+		
+		if (this.connectionThread != null)
+		{
+			result = this.connectionThread.send(message);
+		}
+		
+		return result;
 	}
 	
 	public void close()
@@ -44,17 +56,5 @@ public class ClientConnection
 		{
 			this.connectionThread.close();
 		}
-	}
-	
-	public boolean send(byte[] message)
-	{
-		boolean result = false;
-		
-		if (this.connectionThread != null)
-		{
-			result = this.connectionThread.send(message);
-		}
-		
-		return result;
 	}
 }

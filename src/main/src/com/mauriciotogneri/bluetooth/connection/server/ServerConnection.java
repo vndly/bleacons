@@ -10,26 +10,28 @@ import com.mauriciotogneri.bluetooth.connection.ConnectionThread;
 public class ServerConnection
 {
 	private final ConnectionEvent connectionEvent;
+	private final Context context;
 	private ServerThread serverThread;
 	private ConnectionThread connectionThread;
 	
-	public ServerConnection(ConnectionEvent connectionEvent)
+	public ServerConnection(ConnectionEvent connectionEvent, Context context)
 	{
 		this.connectionEvent = connectionEvent;
+		this.context = context;
 	}
 	
-	public void start(Context context, String uuid, int duration)
+	public void listen(String uuid, int duration)
 	{
 		if (this.serverThread == null)
 		{
-			makeVisible(context, duration);
+			makeVisible(duration);
 			
 			this.serverThread = new ServerThread(this, uuid);
 			this.serverThread.start();
 		}
 	}
 	
-	public void connected(BluetoothSocket socket)
+	void connected(BluetoothSocket socket)
 	{
 		this.connectionEvent.onConnect(socket.getRemoteDevice());
 		
@@ -37,11 +39,23 @@ public class ServerConnection
 		this.connectionThread.start();
 	}
 	
-	public void makeVisible(Context context, int duration)
+	public void makeVisible(int duration)
 	{
 		Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 		intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
-		context.startActivity(intent);
+		this.context.startActivity(intent);
+	}
+	
+	public boolean send(byte[] message)
+	{
+		boolean result = false;
+		
+		if (this.connectionThread != null)
+		{
+			result = this.connectionThread.send(message);
+		}
+		
+		return result;
 	}
 	
 	public void close()
@@ -55,17 +69,5 @@ public class ServerConnection
 		{
 			this.connectionThread.close();
 		}
-	}
-	
-	public boolean send(byte[] message)
-	{
-		boolean result = false;
-		
-		if (this.connectionThread != null)
-		{
-			result = this.connectionThread.send(message);
-		}
-		
-		return result;
 	}
 }
