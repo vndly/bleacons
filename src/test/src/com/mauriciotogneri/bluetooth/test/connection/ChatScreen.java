@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
 import com.mauriciotogneri.bluetooth.connection.client.ClientConnection;
+import com.mauriciotogneri.bluetooth.connection.client.ClientEvent;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class ChatScreen extends Activity implements ConnectionEvent
+public class ChatScreen extends Activity implements ClientEvent
 {
 	private ClientConnection clientConnection;
 	public static final String PARAMETER_DEVICE = "device";
@@ -116,13 +116,13 @@ public class ChatScreen extends Activity implements ConnectionEvent
 	}
 	
 	@Override
-	public void onReceive(BluetoothDevice device, byte[] message)
+	public void onReceive(byte[] message)
 	{
 		addHistory("<<< " + new String(message));
 	}
 	
 	@Override
-	public void onConnect(BluetoothDevice device)
+	public void onConnect()
 	{
 		addHistory("Connected...");
 		
@@ -130,10 +130,16 @@ public class ChatScreen extends Activity implements ConnectionEvent
 	}
 	
 	@Override
-	public void onDisconnect(BluetoothDevice device)
+	public void onDisconnect()
 	{
 		addHistory("Disconnected...");
 		
 		enableButtons(false);
+	}
+	
+	@Override
+	public void onErrorConnecting()
+	{
+		addHistory("Error connecting...");
 	}
 }

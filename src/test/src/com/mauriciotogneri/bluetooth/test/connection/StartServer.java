@@ -18,11 +18,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import com.mauriciotogneri.bluetooth.connection.ConnectionEvent;
 import com.mauriciotogneri.bluetooth.connection.server.ServerConnection;
+import com.mauriciotogneri.bluetooth.connection.server.ServerEvent;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class StartServer extends Activity implements ConnectionEvent
+public class StartServer extends Activity implements ServerEvent
 {
 	private ServerConnection serverConnection;
 	private DeviceAdapter deviceAdapter;
@@ -146,7 +146,7 @@ public class StartServer extends Activity implements ConnectionEvent
 	}
 	
 	@Override
-	public void onConnect(final BluetoothDevice device)
+	public void onClientConnect(final BluetoothDevice device)
 	{
 		addHistory("Device connected: " + device.getName() + " - " + device.getAddress());
 		
@@ -161,7 +161,7 @@ public class StartServer extends Activity implements ConnectionEvent
 	}
 	
 	@Override
-	public void onDisconnect(final BluetoothDevice device)
+	public void onClientDisconnect(final BluetoothDevice device)
 	{
 		addHistory("Device disconnected: " + device.getName() + " - " + device.getAddress());
 		
