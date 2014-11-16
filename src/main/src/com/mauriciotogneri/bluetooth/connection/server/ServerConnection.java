@@ -16,10 +16,8 @@ public class ServerConnection implements ServerEvent
 {
 	private final ServerEvent serverEvent;
 	private final Context context;
-	
 	private final Object serverThreadLock = new Object();
 	private final Set<ServerThread> serverThreads = new HashSet<ServerThread>();
-	
 	private final Object connectionsLock = new Object();
 	private final Map<BluetoothDevice, ServerLink> connections = new HashMap<BluetoothDevice, ServerLink>();
 	
@@ -49,14 +47,19 @@ public class ServerConnection implements ServerEvent
 	
 	public void makeVisible(int duration)
 	{
-		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		
-		if ((bluetoothAdapter != null) && (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
+		if (!isDiscoverable())
 		{
 			Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 			intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
 			this.context.startActivity(intent);
 		}
+	}
+	
+	public boolean isDiscoverable()
+	{
+		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		
+		return ((bluetoothAdapter != null) && (bluetoothAdapter.getScanMode() == BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE));
 	}
 	
 	@Override
