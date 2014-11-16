@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import com.mauriciotogneri.bluetooth.beacons.BeaconService.BeaconBinder;
@@ -20,8 +21,13 @@ public class BeaconManager
 	private BeaconService beaconService;
 	private final ServiceConnection serviceConnection;
 	
-	public BeaconManager(Context context, int scanFrequency)
+	public BeaconManager(Context context, int scanFrequency) throws UnsupportedBluetoothLeException
 	{
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2)
+		{
+			throw new UnsupportedBluetoothLeException(Build.VERSION.SDK_INT);
+		}
+		
 		this.context = context;
 		this.scanFrequency = scanFrequency;
 		
@@ -39,7 +45,6 @@ public class BeaconManager
 				onDisconnected();
 			}
 		};
-		// TODO: THROW AN EXCEPTION IF API < 18
 	}
 	
 	public void start()
@@ -56,6 +61,11 @@ public class BeaconManager
 	public void addFilter(BeaconFilter filter)
 	{
 		this.filters.add(filter);
+	}
+	
+	public void removeFilter(BeaconFilter filter)
+	{
+		this.filters.remove(filter);
 	}
 	
 	public void addListener(BeaconListener listener)
