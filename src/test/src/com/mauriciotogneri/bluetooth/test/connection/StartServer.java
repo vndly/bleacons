@@ -64,6 +64,9 @@ public class StartServer extends Activity implements ServerEvent
 		
 		this.serverConnection = new ServerConnection(this, this);
 		this.serverConnection.listen(TestConnection.UUID, StartServer.VISIBILITY_DURATION);
+		
+		TextView deviceName = (TextView)findViewById(R.id.device_name);
+		deviceName.setText(this.serverConnection.getDeviceName() + " - " + this.serverConnection.getDeviceAddress());
 	}
 	
 	private void deviceSelected(final BluetoothDevice device)

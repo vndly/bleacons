@@ -54,6 +54,9 @@ public class ChatScreen extends Activity implements ClientEvent
 		
 		this.clientConnection = new ClientConnection(this);
 		this.clientConnection.connect(device, TestConnection.UUID);
+		
+		TextView deviceName = (TextView)findViewById(R.id.device_name);
+		deviceName.setText(this.clientConnection.getDeviceName() + " - " + this.clientConnection.getDeviceAddress());
 	}
 	
 	private void addHistory(final String text)
