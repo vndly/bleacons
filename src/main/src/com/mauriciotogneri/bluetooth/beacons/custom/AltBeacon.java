@@ -10,7 +10,7 @@ public class AltBeacon extends Beacon
 		super(macAddress, rssi);
 	}
 	
-	public static class Filter implements BeaconFilter
+	public static class Filter extends BeaconFilter
 	{
 		@Override
 		public Beacon getBeacon(String macAddres, int rssi, byte[] data)
