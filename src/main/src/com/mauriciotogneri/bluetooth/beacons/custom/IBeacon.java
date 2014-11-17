@@ -27,6 +27,16 @@ public class IBeacon extends Beacon
 		private final Integer filterMajor;
 		private final Integer filterMinor;
 		
+		private static final byte HEADER_0 = BeaconFilter.toByte("02");
+		private static final byte HEADER_1 = BeaconFilter.toByte("01");
+		private static final byte HEADER_2 = BeaconFilter.toByte("06");
+		private static final byte HEADER_3 = BeaconFilter.toByte("1A");
+		private static final byte HEADER_4 = BeaconFilter.toByte("FF");
+		private static final byte HEADER_5 = BeaconFilter.toByte("4C");
+		private static final byte HEADER_6 = BeaconFilter.toByte("00");
+		private static final byte HEADER_7 = BeaconFilter.toByte("02");
+		private static final byte HEADER_8 = BeaconFilter.toByte("15");
+		
 		public Filter(String filterUUID, Integer filterMajor, Integer filterMinor)
 		{
 			this.filterUUID = filterUUID;
@@ -77,15 +87,15 @@ public class IBeacon extends Beacon
 		
 		private boolean isValidHeader(byte[] data)
 		{
-			return ((data[0] == 2) && // 0x02
-			    (data[1] == 1) && // 0x01
-			    (data[2] == 6) && // 0x06
-			    (data[3] == 26) && // 0x1A
-			    (data[4] == 255) && // 0xFF
-			    (data[5] == 76) && // 0x4C
-			    (data[6] == 0) && // 0x00
-			    (data[7] == 2) && // 0x02
-			(data[8] == 21)); // 0x15
+			return ((data[0] == Filter.HEADER_0) && // 0x02
+			    (data[1] == Filter.HEADER_1) && // 0x01
+			    (data[2] == Filter.HEADER_2) && // 0x06
+			    (data[3] == Filter.HEADER_3) && // 0x1A
+			    (data[4] == Filter.HEADER_4) && // 0xFF
+			    (data[5] == Filter.HEADER_5) && // 0x4C
+			    (data[6] == Filter.HEADER_6) && // 0x00
+			    (data[7] == Filter.HEADER_7) && // 0x02
+			(data[8] == Filter.HEADER_8)); // 0x15
 		}
 		
 		private String getUUID(byte[] data)
