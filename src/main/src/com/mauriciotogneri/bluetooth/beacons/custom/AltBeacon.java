@@ -13,7 +13,7 @@ public class AltBeacon extends Beacon
 	public static class Filter implements BeaconFilter
 	{
 		@Override
-		public AltBeacon getBeacon(String macAddres, int rssi, byte[] data)
+		public Beacon getBeacon(String macAddres, int rssi, byte[] data)
 		{
 			return null;
 		}
