@@ -138,7 +138,7 @@ public class IBeacon extends Beacon
 		
 		private int getTxPower(byte[] data)
 		{
-			return data[29] - 256;
+			return data[29];
 		}
 	}
 }
