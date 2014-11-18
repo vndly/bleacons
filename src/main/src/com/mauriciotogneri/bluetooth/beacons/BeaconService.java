@@ -19,6 +19,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 @TargetApi(18)
+@SuppressWarnings("deprecation")
 public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
@@ -49,6 +50,16 @@ public class BeaconService extends Service implements LeScanCallback
 		this.bluetoothAdapter.startLeScan(this);
 		
 		startScanningCycle();
+	}
+	
+	public void pause()
+	{
+		// TODO
+	}
+	
+	public void resume()
+	{
+		// TODO
 	}
 	
 	private void startScanningCycle()

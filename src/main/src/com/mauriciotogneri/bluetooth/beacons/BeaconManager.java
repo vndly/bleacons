@@ -55,9 +55,30 @@ public class BeaconManager
 		this.context.bindService(intent, this.serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 	
+	public void pause()
+	{
+		if (this.beaconService != null)
+		{
+			this.beaconService.pause();
+		}
+	}
+	
+	public void resume()
+	{
+		if (this.beaconService != null)
+		{
+			this.beaconService.resume();
+		}
+	}
+	
 	public boolean isConnected()
 	{
 		return this.isConnected;
+	}
+	
+	public void stop()
+	{
+		this.context.unbindService(this.serviceConnection);
 	}
 	
 	public void addFilter(BeaconFilter filter)
@@ -90,11 +111,6 @@ public class BeaconManager
 		{
 			this.listeners.remove(listener);
 		}
-	}
-	
-	public void stop()
-	{
-		this.context.unbindService(this.serviceConnection);
 	}
 	
 	private void onConnected(IBinder service)
