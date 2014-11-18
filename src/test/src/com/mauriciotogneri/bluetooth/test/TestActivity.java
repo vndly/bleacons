@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import com.mauriciotogneri.bluetooth.test.beacons.TestBeacons;
 import com.mauriciotogneri.bluetooth.test.connection.StartClient;
@@ -17,6 +19,9 @@ public class TestActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		Window window = getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		Button listenBeacons = (Button)findViewById(R.id.listen_beacons);
 		listenBeacons.setOnClickListener(new OnClickListener()

@@ -1,10 +1,14 @@
 package com.mauriciotogneri.bluetooth.test.beacons;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ListView;
 import com.mauriciotogneri.bluetooth.beacons.Beacon;
 import com.mauriciotogneri.bluetooth.beacons.BeaconListener;
@@ -17,7 +21,7 @@ public class TestBeacons extends Activity implements BeaconListener
 {
 	private BeaconManager beaconManager;
 	private BeaconAdapter beaconAdapter;
-	private final List<IBeacon> beacons = new ArrayList<IBeacon>();
+	private final List<IBeacon> beaconList = new ArrayList<IBeacon>();
 	
 	private static final int SCAN_FREQUENCY = 1000;
 	
@@ -27,12 +31,13 @@ public class TestBeacons extends Activity implements BeaconListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_listen_beacons);
 		
-		this.beaconAdapter = new BeaconAdapter(this, this.beacons);
+		Window window = getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
+		this.beaconAdapter = new BeaconAdapter(this, this.beaconList);
 		
 		ListView listView = (ListView)findViewById(R.id.beacon_list);
 		listView.setAdapter(this.beaconAdapter);
-		
-		// TODO: ACTIVATE BLUETOOTH
 		
 		try
 		{
@@ -50,15 +55,22 @@ public class TestBeacons extends Activity implements BeaconListener
 	@Override
 	public void onReceive(List<Beacon> beacons)
 	{
+		this.beaconList.clear();
+		
 		for (Beacon beacon : beacons)
 		{
 			IBeacon ibeacon = (IBeacon)beacon;
-			
-			if (!beacons.contains(ibeacon))
-			{
-				beacons.add(ibeacon);
-			}
+			this.beaconList.add(ibeacon);
 		}
+		
+		Collections.sort(this.beaconList, new Comparator<IBeacon>()
+		{
+			@Override
+			public int compare(IBeacon lhs, IBeacon rhs)
+			{
+				return lhs.getRssi() - rhs.getRssi();
+			}
+		});
 		
 		this.beaconAdapter.notifyDataSetChanged();
 		

@@ -5,6 +5,13 @@
     
     <string name="image_description"></string>
     
+    <string name="beacon_row_mac">MAC:</string>
+    <string name="beacon_row_uuid">UUID:</string>
+    <string name="beacon_row_major">MAJOR:</string>
+    <string name="beacon_row_minor">MINOR:</string>
+    <string name="beacon_row_rssi">RSSI:</string>
+    <string name="beacon_row_txpower">TX POWER:</string>
+    
     <string name="connection_button_scan">Scan</string>
     <string name="connection_button_scanning">Scanning&#8230;</string>
     <string name="connection_button_cancel">Cancel</string>

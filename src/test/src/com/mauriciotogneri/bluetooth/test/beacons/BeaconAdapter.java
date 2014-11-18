@@ -35,6 +35,21 @@ public class BeaconAdapter extends ArrayAdapter<IBeacon>
 		TextView address = (TextView)convertView.findViewById(R.id.beacon_address);
 		address.setText(beacon.getMacAddress());
 		
+		TextView uuid = (TextView)convertView.findViewById(R.id.beacon_uuid);
+		uuid.setText(beacon.uuid.toLowerCase());
+		
+		TextView major = (TextView)convertView.findViewById(R.id.beacon_major);
+		major.setText(String.valueOf(beacon.major));
+		
+		TextView minor = (TextView)convertView.findViewById(R.id.beacon_minor);
+		minor.setText(String.valueOf(beacon.minor));
+		
+		TextView rssi = (TextView)convertView.findViewById(R.id.beacon_rssi);
+		rssi.setText(String.valueOf(beacon.getRssi()));
+		
+		TextView txPower = (TextView)convertView.findViewById(R.id.beacon_txpower);
+		txPower.setText(String.valueOf(beacon.txPower));
+		
 		return convertView;
 	}
 }
