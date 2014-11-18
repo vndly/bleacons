@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bluetooth.test.connection;
+package com.mauriciotogneri.bluetooth.test;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,17 +6,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import com.mauriciotogneri.bluetooth.test.R;
+import com.mauriciotogneri.bluetooth.test.beacons.TestBeacons;
+import com.mauriciotogneri.bluetooth.test.connection.StartClient;
+import com.mauriciotogneri.bluetooth.test.connection.StartServer;
 
-public class TestConnection extends Activity
+public class TestActivity extends Activity
 {
-	public static final String UUID = "a6989332-69a6-11e4-b116-123b93f75cba";
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_connection);
+		setContentView(R.layout.activity_main);
+		
+		Button listenBeacons = (Button)findViewById(R.id.listen_beacons);
+		listenBeacons.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				listenBeacons();
+			}
+		});
 		
 		Button startClient = (Button)findViewById(R.id.start_client);
 		startClient.setOnClickListener(new OnClickListener()
@@ -37,6 +47,12 @@ public class TestConnection extends Activity
 				startServer();
 			}
 		});
+	}
+	
+	private void listenBeacons()
+	{
+		Intent intent = new Intent(this, TestBeacons.class);
+		startActivity(intent);
 	}
 	
 	private void startClient()

@@ -28,6 +28,7 @@ public class StartServer extends Activity implements ServerEvent
 	private DeviceAdapter deviceAdapter;
 	
 	private static final int VISIBILITY_DURATION = 60;
+	public static final String UUID = "a6989332-69a6-11e4-b116-123b93f75cba";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -63,7 +64,7 @@ public class StartServer extends Activity implements ServerEvent
 		});
 		
 		this.serverConnection = new ServerConnection(this, this);
-		this.serverConnection.listen(TestConnection.UUID, 2, StartServer.VISIBILITY_DURATION);
+		this.serverConnection.listen(StartServer.UUID, 2, StartServer.VISIBILITY_DURATION);
 		
 		TextView deviceName = (TextView)findViewById(R.id.device_name);
 		deviceName.setText(this.serverConnection.getDeviceName() + " - " + this.serverConnection.getDeviceAddress());

@@ -12,6 +12,19 @@
         android:gravity="center_horizontal" >
 
         <Button
+            android:id="@+id/listen_beacons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Listen Beacons" />
+        
+    </TableRow>
+    
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal" >
+
+        <Button
             android:id="@+id/start_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

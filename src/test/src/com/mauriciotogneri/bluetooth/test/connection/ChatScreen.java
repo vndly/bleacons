@@ -53,7 +53,7 @@ public class ChatScreen extends Activity implements ClientEvent
 		BluetoothDevice device = getIntent().getExtras().getParcelable(ChatScreen.PARAMETER_DEVICE);
 		
 		this.clientConnection = new ClientConnection(this);
-		this.clientConnection.connect(device, TestConnection.UUID);
+		this.clientConnection.connect(device, StartServer.UUID);
 		
 		TextView deviceName = (TextView)findViewById(R.id.device_name);
 		deviceName.setText(this.clientConnection.getDeviceName() + " - " + this.clientConnection.getDeviceAddress());

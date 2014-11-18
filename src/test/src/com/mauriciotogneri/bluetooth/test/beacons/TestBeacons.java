@@ -11,7 +11,7 @@ import com.mauriciotogneri.bluetooth.beacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bluetooth.beacons.custom.IBeacon;
 import com.mauriciotogneri.bluetooth.test.R;
 
-public class TestActivity extends Activity implements BeaconListener
+public class TestBeacons extends Activity implements BeaconListener
 {
 	private BeaconManager beaconManager;
 	
@@ -19,7 +19,9 @@ public class TestActivity extends Activity implements BeaconListener
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_connection);
+		setContentView(R.layout.activity_listen_beacons);
+		
+		// TODO: ACTIVATE BLUETOOTH
 		
 		try
 		{
