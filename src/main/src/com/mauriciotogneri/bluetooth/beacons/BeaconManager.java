@@ -2,6 +2,7 @@ package com.mauriciotogneri.bluetooth.beacons;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,18 @@ public class BeaconManager
 				onDisconnected();
 			}
 		};
+		
+		enableBluetooth();
+	}
+	
+	private void enableBluetooth()
+	{
+		BluetoothAdapter result = BluetoothAdapter.getDefaultAdapter();
+		
+		if (!result.isEnabled())
+		{
+			result.enable();
+		}
 	}
 	
 	public void start()
