@@ -1,6 +1,7 @@
 package com.mauriciotogneri.bluetooth.beacons;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 @TargetApi(18)
-@SuppressWarnings("deprecation")
 public class BeaconService extends Service implements LeScanCallback
 {
 	private int scanFrequency;
@@ -28,7 +28,7 @@ public class BeaconService extends Service implements LeScanCallback
 	private Object listenersLock;
 	private List<BeaconListener> listeners;
 	private BluetoothAdapter bluetoothAdapter;
-	private boolean scanningActive = false;
+	private volatile boolean scanningActive = false;
 	private final Handler handler = new Handler();
 	private final Object currentBeaconsLock = new Object();
 	private final Map<String, Beacon> currentBeacons = new HashMap<String, Beacon>();
@@ -54,12 +54,12 @@ public class BeaconService extends Service implements LeScanCallback
 	
 	public void pause()
 	{
-		// TODO
+		this.scanningActive = false;
 	}
 	
 	public void resume()
 	{
-		// TODO
+		this.scanningActive = true;
 	}
 	
 	private void startScanningCycle()
@@ -79,17 +79,17 @@ public class BeaconService extends Service implements LeScanCallback
 	}
 	
 	@Override
-	public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord)
+	public void onLeScan(BluetoothDevice device, int rssi, byte[] data)
 	{
 		String macAddress = device.getAddress();
 		
-		log("BEACON SCANNED: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + scanRecord.length);
+		log("BEACON SCANNED: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + Arrays.toString(data));
 		
 		synchronized (this.filtersLock)
 		{
 			for (BeaconFilter filter : this.filters)
 			{
-				Beacon beacon = filter.getBeacon(macAddress, rssi, scanRecord);
+				Beacon beacon = filter.getBeacon(macAddress, rssi, data);
 				
 				if (beacon != null)
 				{
@@ -97,6 +97,8 @@ public class BeaconService extends Service implements LeScanCallback
 					{
 						this.currentBeacons.put(macAddress, beacon);
 					}
+					
+					break;
 				}
 			}
 		}
