@@ -91,7 +91,13 @@ public class BeaconManager
 	
 	public void stop()
 	{
-		this.context.unbindService(this.serviceConnection);
+		try
+		{
+			this.context.unbindService(this.serviceConnection);
+		}
+		catch (Exception e)
+		{
+		}
 	}
 	
 	public void addFilter(BeaconFilter filter)
