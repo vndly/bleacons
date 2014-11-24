@@ -6,11 +6,16 @@ import android.bluetooth.BluetoothSocket;
 
 public class ClientConnection implements ClientEvent
 {
-	private final ClientEvent clientEvent;
+	private ClientEvent clientEvent;
 	private ClientThread clientThread;
 	private ClientLink clientLink;
 	
 	public ClientConnection(ClientEvent clientEvent)
+	{
+		this.clientEvent = clientEvent;
+	}
+	
+	public void setListener(ClientEvent clientEvent)
 	{
 		this.clientEvent = clientEvent;
 	}
@@ -77,13 +82,13 @@ public class ClientConnection implements ClientEvent
 		this.clientEvent.onDisconnect();
 	}
 	
-	public boolean send(byte[] message)
+	public boolean send(byte[] message, boolean force)
 	{
 		boolean result = false;
 		
 		if (this.clientLink != null)
 		{
-			result = this.clientLink.send(message);
+			result = this.clientLink.send(message, force);
 		}
 		
 		return result;

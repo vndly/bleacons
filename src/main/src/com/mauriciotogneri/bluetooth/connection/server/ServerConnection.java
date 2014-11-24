@@ -10,10 +10,11 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class ServerConnection implements ServerEvent
 {
-	private final ServerEvent serverEvent;
+	private ServerEvent serverEvent;
 	private final Context context;
 	private final Object serverThreadLock = new Object();
 	private final Set<ServerThread> serverThreads = new HashSet<ServerThread>();
@@ -24,6 +25,11 @@ public class ServerConnection implements ServerEvent
 	{
 		this.serverEvent = serverEvent;
 		this.context = context;
+	}
+	
+	public void setListener(ServerEvent serverEvent)
+	{
+		this.serverEvent = serverEvent;
 	}
 	
 	public void listen(String uuid, int numberOfConnections, int duration)
@@ -64,6 +70,8 @@ public class ServerConnection implements ServerEvent
 	@Override
 	public void onReceive(BluetoothDevice device, byte[] message)
 	{
+		Log.e("TEST", "RECEIVING: " + device.getAddress() + ": " + message.length);
+		
 		this.serverEvent.onReceive(device, message);
 	}
 	
@@ -128,7 +136,7 @@ public class ServerConnection implements ServerEvent
 		onErrorOpeningConnection();
 	}
 	
-	public boolean send(BluetoothDevice device, byte[] message)
+	public boolean send(BluetoothDevice device, byte[] message, boolean force)
 	{
 		boolean result = false;
 		
@@ -136,13 +144,13 @@ public class ServerConnection implements ServerEvent
 		
 		if (serverLink != null)
 		{
-			result = serverLink.send(message);
+			result = serverLink.send(message, force);
 		}
 		
 		return result;
 	}
 	
-	public boolean sendAll(BluetoothDevice device, byte[] message)
+	public boolean sendAll(BluetoothDevice device, byte[] message, boolean force)
 	{
 		boolean result = false;
 		
@@ -154,7 +162,7 @@ public class ServerConnection implements ServerEvent
 			{
 				if (link != device)
 				{
-					result |= this.connections.get(link).send(message);
+					result |= this.connections.get(link).send(message, force);
 				}
 			}
 		}
@@ -162,9 +170,9 @@ public class ServerConnection implements ServerEvent
 		return result;
 	}
 	
-	public boolean sendAll(byte[] message)
+	public boolean sendAll(byte[] message, boolean force)
 	{
-		return sendAll(null, message);
+		return sendAll(null, message, force);
 	}
 	
 	private void addServerThread(ServerThread serverThread)

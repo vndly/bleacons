@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 public abstract class ConnectionThread extends Thread
 {
@@ -13,6 +14,7 @@ public abstract class ConnectionThread extends Thread
 	private final InputStream inputStream;
 	private final OutputStream outputStream;
 	private boolean connected = false;
+	private volatile boolean lastMessageSent = true;
 	
 	private static final int BUFFER_SIZE = 1024;
 	
@@ -37,7 +39,16 @@ public abstract class ConnectionThread extends Thread
 			{
 				int bytes = this.inputStream.read(buffer);
 				
-				onReceive(device, Arrays.copyOfRange(buffer, 0, bytes));
+				try
+				{
+					byte[] message = Arrays.copyOfRange(buffer, 0, bytes);
+					Log.e("TEST", "RECEIVED FROM: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
+					onReceive(device, message);
+				}
+				catch (Exception e)
+				{
+					Log.e("TEST", "ERROR", e);
+				}
 			}
 			catch (Exception e)
 			{
@@ -54,21 +65,28 @@ public abstract class ConnectionThread extends Thread
 	
 	protected abstract void onDisconnect(BluetoothDevice device);
 	
-	public boolean send(byte[] message)
+	public boolean send(byte[] message, boolean force)
 	{
 		boolean result = false;
 		
-		if (this.connected)
+		if ((this.connected) && (force || this.lastMessageSent))
 		{
+			this.lastMessageSent = false;
+			
 			try
 			{
+				Log.e("TEST", "SENDING TO: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
 				this.outputStream.write(message);
+				this.outputStream.flush();
+				Log.e("TEST", "SENT TO: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
 				
 				result = true;
 			}
 			catch (Exception e)
 			{
 			}
+			
+			this.lastMessageSent = true;
 		}
 		
 		return result;
