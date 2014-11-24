@@ -94,7 +94,7 @@ public class ChatScreen extends Activity implements ClientEvent
 		EditText editText = (EditText)findViewById(R.id.message);
 		String message = editText.getText().toString();
 		
-		this.clientConnection.send(message.getBytes());
+		this.clientConnection.send(message.getBytes(), true);
 		
 		addHistory(">>> " + message);
 		
