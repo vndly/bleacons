@@ -100,7 +100,7 @@ public class StartServer extends Activity implements ServerEvent
 	
 	private void send(BluetoothDevice device, String message)
 	{
-		this.serverConnection.send(device, message.getBytes(), true);
+		this.serverConnection.send(device.getAddress(), message.getBytes(), true);
 		
 		addHistory(">>> " + message);
 	}
