@@ -10,7 +10,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class ServerConnection implements ServerEvent
 {
@@ -70,8 +69,6 @@ public class ServerConnection implements ServerEvent
 	@Override
 	public void onReceive(BluetoothDevice device, byte[] message)
 	{
-		Log.e("TEST", "RECEIVING: " + device.getAddress() + ": " + message.length);
-		
 		this.serverEvent.onReceive(device, message);
 	}
 	

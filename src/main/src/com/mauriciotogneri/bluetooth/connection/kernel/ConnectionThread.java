@@ -42,7 +42,6 @@ public abstract class ConnectionThread extends Thread
 				try
 				{
 					byte[] message = Arrays.copyOfRange(buffer, 0, bytes);
-					Log.e("TEST", "RECEIVED FROM: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
 					onReceive(device, message);
 				}
 				catch (Exception e)
@@ -75,10 +74,8 @@ public abstract class ConnectionThread extends Thread
 			
 			try
 			{
-				Log.e("TEST", "SENDING TO: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
 				this.outputStream.write(message);
 				this.outputStream.flush();
-				Log.e("TEST", "SENT TO: " + this.socket.getRemoteDevice().getAddress() + " = " + message[0]);
 				
 				result = true;
 			}
