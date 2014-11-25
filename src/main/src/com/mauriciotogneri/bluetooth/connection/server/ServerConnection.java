@@ -19,7 +19,7 @@ public class ServerConnection implements ServerEvent
 	private final Object serverThreadLock = new Object();
 	private final Set<ServerThread> serverThreads = new HashSet<ServerThread>();
 	private final Object connectionsLock = new Object();
-	private final Map<BluetoothDevice, ServerLink> connections = new HashMap<BluetoothDevice, ServerLink>();
+	private final Map<String, ServerLink> connections = new HashMap<String, ServerLink>();
 	
 	public ServerConnection(ServerEvent serverEvent, Context context)
 	{
@@ -119,7 +119,7 @@ public class ServerConnection implements ServerEvent
 			
 			BluetoothDevice device = socket.getRemoteDevice();
 			
-			addConnection(device, serverLink);
+			addConnection(device.getAddress(), serverLink);
 			
 			onConnect(device);
 		}
@@ -136,11 +136,11 @@ public class ServerConnection implements ServerEvent
 		onErrorOpeningConnection();
 	}
 	
-	public boolean send(BluetoothDevice device, byte[] message, boolean force)
+	public boolean send(String macAddress, byte[] message, boolean force)
 	{
 		boolean result = false;
 		
-		ServerLink serverLink = getConnection(device);
+		ServerLink serverLink = getConnection(macAddress);
 		
 		if (serverLink != null)
 		{
@@ -150,19 +150,19 @@ public class ServerConnection implements ServerEvent
 		return result;
 	}
 	
-	public boolean sendAll(BluetoothDevice device, byte[] message, boolean force)
+	public boolean sendAll(String macAddress, byte[] message, boolean force)
 	{
 		boolean result = false;
 		
 		synchronized (this.connectionsLock)
 		{
-			Set<BluetoothDevice> links = this.connections.keySet();
+			Set<String> addresses = this.connections.keySet();
 			
-			for (BluetoothDevice link : links)
+			for (String address : addresses)
 			{
-				if (link != device)
+				if (!address.equals(macAddress))
 				{
-					result |= this.connections.get(link).send(message, force);
+					result |= this.connections.get(address).send(message, force);
 				}
 			}
 		}
@@ -191,11 +191,11 @@ public class ServerConnection implements ServerEvent
 		}
 	}
 	
-	private void addConnection(BluetoothDevice device, ServerLink serverLink)
+	private void addConnection(String macAddress, ServerLink serverLink)
 	{
 		synchronized (this.connectionsLock)
 		{
-			this.connections.put(device, serverLink);
+			this.connections.put(macAddress, serverLink);
 		}
 	}
 	
@@ -207,13 +207,13 @@ public class ServerConnection implements ServerEvent
 		}
 	}
 	
-	private ServerLink getConnection(BluetoothDevice device)
+	private ServerLink getConnection(String macAddress)
 	{
 		ServerLink result = null;
 		
 		synchronized (this.connectionsLock)
 		{
-			result = this.connections.get(device);
+			result = this.connections.get(macAddress);
 		}
 		
 		return result;
