@@ -14,9 +14,7 @@ import com.mauriciotogneri.bleacons.modes.ReadingMode;
 public class BeaconManager
 {
     private final Context context;
-
     private final BeaconManagerObserver beaconManagerObserver;
-
     private BeaconService beaconService;
     private volatile boolean isConnected = false;
     private final ServiceConnection serviceConnection;
@@ -47,44 +45,57 @@ public class BeaconManager
         };
     }
 
-    public void start()
+    public boolean connect()
     {
         Intent intent = new Intent(context, BeaconService.class);
-        context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        return context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public void pause()
+    public void disconnect()
     {
-        if ((beaconService != null) && (isConnected()))
-        {
-            beaconService.pause();
-        }
+        context.unbindService(serviceConnection);
     }
 
-    public void resume()
+    public boolean resume()
     {
         if ((beaconService != null) && (isConnected()))
         {
             beaconService.resume();
+
+            return true;
         }
+
+        return false;
     }
 
-    public void stop()
+    public boolean pause()
     {
-        context.unbindService(serviceConnection);
+        if ((beaconService != null) && (isConnected()))
+        {
+            beaconService.pause();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean setMode(ReadingMode readingMode)
+    {
+        if (isConnected())
+        {
+            beaconService.setMode(readingMode);
+
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isConnected()
     {
         return isConnected;
-    }
-
-    public void startListening(ReadingMode readingMode)
-    {
-        if (isConnected())
-        {
-            beaconService.startListening(readingMode);
-        }
     }
 
     private void onConnected(IBinder service)

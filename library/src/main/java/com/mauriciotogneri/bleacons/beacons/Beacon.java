@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bleacons;
+package com.mauriciotogneri.bleacons.beacons;
 
 public class Beacon
 {

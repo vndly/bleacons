@@ -1,6 +1,5 @@
-package com.mauriciotogneri.bleacons.sample.beacons.custom;
+package com.mauriciotogneri.bleacons.beacons;
 
-import com.mauriciotogneri.bleacons.Beacon;
 import com.mauriciotogneri.bleacons.BeaconFilter;
 
 import java.util.Arrays;

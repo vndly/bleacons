@@ -1,5 +1,7 @@
 package com.mauriciotogneri.bleacons;
 
+import com.mauriciotogneri.bleacons.beacons.Beacon;
+
 public class Reading
 {
     public final Beacon beacon;

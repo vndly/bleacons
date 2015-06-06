@@ -1,5 +1,7 @@
 package com.mauriciotogneri.bleacons;
 
+import com.mauriciotogneri.bleacons.beacons.Beacon;
+
 import java.util.LinkedHashMap;
 
 public class BeaconCache extends LinkedHashMap<String, Beacon>

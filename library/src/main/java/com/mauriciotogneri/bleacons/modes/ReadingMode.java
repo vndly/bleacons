@@ -1,6 +1,6 @@
 package com.mauriciotogneri.bleacons.modes;
 
-import com.mauriciotogneri.bleacons.Beacon;
+import com.mauriciotogneri.bleacons.beacons.Beacon;
 import com.mauriciotogneri.bleacons.BeaconCache;
 import com.mauriciotogneri.bleacons.BeaconFilter;
 import com.mauriciotogneri.bleacons.Reading;
@@ -59,7 +59,7 @@ public abstract class ReadingMode
         return null;
     }
 
-    protected void broadcastReading(List<Reading> readings)
+    protected void broadcastReadings(List<Reading> readings)
     {
         for (BeaconListener listener : beaconListeners)
         {
@@ -73,9 +73,9 @@ public abstract class ReadingMode
 
         if (beacon != null)
         {
-            processBeacon(beacon, rssi);
+            processBeacon(beacon, rssi, System.currentTimeMillis());
         }
     }
 
-    public abstract void processBeacon(Beacon beacon, int rssi);
+    public abstract void processBeacon(Beacon beacon, int rssi, long timestamp);
 }

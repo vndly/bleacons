@@ -1,6 +1,6 @@
 package com.mauriciotogneri.bleacons.modes;
 
-import com.mauriciotogneri.bleacons.Beacon;
+import com.mauriciotogneri.bleacons.beacons.Beacon;
 import com.mauriciotogneri.bleacons.BeaconFilter;
 import com.mauriciotogneri.bleacons.interfaces.BeaconListener;
 
@@ -8,23 +8,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModeWindow extends ReadingMode
+public class ReadingModeWindow extends ReadingMode
 {
     private int scanFrequency;
     private final Object currentBeaconsLock = new Object();
     private final Map<String, Beacon> currentBeacons = new HashMap<>();
 
-    public ModeWindow(List<BeaconListener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency)
+    public ReadingModeWindow(List<BeaconListener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency)
     {
         super(beaconListeners, beaconFilters, maxCapacity);
 
         this.scanFrequency = scanFrequency;
     }
 
-    @Override
-    public void processBeacon(Beacon beacon, int rssi)
+    public ReadingModeWindow(BeaconListener beaconListener, BeaconFilter beaconFilter, int maxCapacity, int scanFrequency)
     {
-//        List<Beacon> beaconsList = new ArrayList<>();
+        super(beaconListener, beaconFilter, maxCapacity);
+
+        this.scanFrequency = scanFrequency;
+    }
+
+    @Override
+    public void processBeacon(Beacon beacon, int rssi, long timestamp)
+    {
+        //        List<Beacon> beaconsList = new ArrayList<>();
         //
         //        synchronized (currentBeaconsLock)
         //        {

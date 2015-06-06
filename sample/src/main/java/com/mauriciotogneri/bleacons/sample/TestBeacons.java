@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bleacons.sample.beacons;
+package com.mauriciotogneri.bleacons.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,10 +13,9 @@ import com.mauriciotogneri.bleacons.Reading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.interfaces.BeaconListener;
 import com.mauriciotogneri.bleacons.interfaces.BeaconManagerObserver;
-import com.mauriciotogneri.bleacons.modes.ModeContinuous;
+import com.mauriciotogneri.bleacons.modes.ReadingModeContinuous;
 import com.mauriciotogneri.bleacons.modes.ReadingMode;
-import com.mauriciotogneri.bleacons.sample.R;
-import com.mauriciotogneri.bleacons.sample.beacons.custom.IBeacon;
+import com.mauriciotogneri.bleacons.beacons.IBeacon;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,7 +47,7 @@ public class TestBeacons extends Activity implements BeaconListener, BeaconManag
         try
         {
             beaconManager = new BeaconManager(this, this);
-            beaconManager.start();
+            beaconManager.connect();
         }
         catch (UnsupportedBluetoothLeException e)
         {
@@ -77,7 +76,7 @@ public class TestBeacons extends Activity implements BeaconListener, BeaconManag
     {
         super.onDestroy();
 
-        beaconManager.stop();
+        beaconManager.disconnect();
     }
 
     @Override
@@ -85,9 +84,9 @@ public class TestBeacons extends Activity implements BeaconListener, BeaconManag
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
-        ReadingMode mode = new ModeContinuous(this, new IBeacon.Filter(), 100);
+        ReadingMode mode = new ReadingModeContinuous(this, new IBeacon.Filter(), 100);
 
-        beaconManager.startListening(mode);
+        beaconManager.setMode(mode);
     }
 
     @Override

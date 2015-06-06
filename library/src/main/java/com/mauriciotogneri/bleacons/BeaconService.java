@@ -24,7 +24,7 @@ public class BeaconService extends Service implements LeScanCallback
     private BluetoothAdapter bluetoothAdapter;
     private volatile boolean isScanning = false;
 
-    public void startListening(ReadingMode mode)
+    public void setMode(ReadingMode mode)
     {
         synchronized (readingModeLock)
         {

@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bleacons.sample.beacons;
+package com.mauriciotogneri.bleacons.sample;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,8 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.mauriciotogneri.bleacons.Reading;
-import com.mauriciotogneri.bleacons.sample.R;
-import com.mauriciotogneri.bleacons.sample.beacons.custom.IBeacon;
+import com.mauriciotogneri.bleacons.beacons.IBeacon;
 
 import java.util.List;
 

@@ -10,8 +10,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.mauriciotogneri.bleacons.sample.beacons.TestBeacons;
-
 public class TestActivity extends Activity
 {
     @Override
