@@ -105,7 +105,7 @@ public class BeaconService extends Service implements LeScanCallback
     @Override
     public IBinder onBind(Intent intent)
     {
-        return new BeaconBinder();
+        return new ServiceBinder(this);
     }
 
     @Override
@@ -120,22 +120,33 @@ public class BeaconService extends Service implements LeScanCallback
         super.onCreate();
 
         BluetoothManager bluetoothManager = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
+
+        if (bluetoothManager != null)
+        {
+            bluetoothAdapter = bluetoothManager.getAdapter();
+        }
     }
 
     @Override
     public void onDestroy()
     {
-        pause();
+        stop();
 
         super.onDestroy();
     }
 
-    public class BeaconBinder extends Binder
+    static class ServiceBinder extends Binder
     {
+        private final BeaconService beaconService;
+
+        public ServiceBinder(BeaconService beaconService)
+        {
+            this.beaconService = beaconService;
+        }
+
         public BeaconService getService()
         {
-            return BeaconService.this;
+            return beaconService;
         }
     }
 }

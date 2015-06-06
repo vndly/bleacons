@@ -7,7 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
 
-import com.mauriciotogneri.bleacons.BeaconService.BeaconBinder;
+import com.mauriciotogneri.bleacons.BeaconService.ServiceBinder;
 import com.mauriciotogneri.bleacons.modes.ReadingMode;
 
 public class BeaconManager
@@ -120,7 +120,7 @@ public class BeaconManager
     {
         isConnected = true;
 
-        BeaconBinder binder = (BeaconBinder) service;
+        ServiceBinder binder = (ServiceBinder) service;
         beaconService = binder.getService();
 
         beaconManagerObserver.onConnected();

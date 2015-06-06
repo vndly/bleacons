@@ -2,7 +2,7 @@ package com.mauriciotogneri.bleacons;
 
 import com.mauriciotogneri.bleacons.beacons.Beacon;
 
-public abstract class BeaconFilter
+public abstract class BeaconFilter<BeaconType extends Beacon>
 {
     private static final char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
@@ -37,5 +37,5 @@ public abstract class BeaconFilter
         return new String(chars);
     }
 
-    public abstract Beacon getBeacon(String macAddress, byte[] data);
+    public abstract BeaconType getBeacon(String macAddress, byte[] data);
 }

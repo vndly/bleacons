@@ -21,7 +21,7 @@ public class IBeacon extends Beacon
         this.txPower = txPower;
     }
 
-    public static class Filter extends BeaconFilter
+    public static class Filter extends BeaconFilter<IBeacon>
     {
         private final String filterUUID;
         private final Integer filterMajor;
@@ -50,7 +50,7 @@ public class IBeacon extends Beacon
         }
 
         @Override
-        public Beacon getBeacon(String macAddress, byte[] data)
+        public IBeacon getBeacon(String macAddress, byte[] data)
         {
             IBeacon result = null;
 

@@ -21,7 +21,7 @@ public class AltBeacon extends Beacon
         this.referenceRSSI = referenceRSSI;
     }
 
-    public static class Filter extends BeaconFilter
+    public static class Filter extends BeaconFilter<AltBeacon>
     {
         private static final byte HEADER_0 = BeaconFilter.toByte("1B");
         private static final byte HEADER_1 = BeaconFilter.toByte("FF");
@@ -29,7 +29,7 @@ public class AltBeacon extends Beacon
         private static final byte HEADER_5 = BeaconFilter.toByte("AC");
 
         @Override
-        public Beacon getBeacon(String macAddress, byte[] data)
+        public AltBeacon getBeacon(String macAddress, byte[] data)
         {
             AltBeacon result = null;
 

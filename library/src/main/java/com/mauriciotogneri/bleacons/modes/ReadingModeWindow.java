@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class ReadingModeWindow extends ReadingMode<Listener>
 {
-    private int scanFrequency;
+    private final int scanFrequency;
     private final Handler handler = new Handler();
     private final Object mapsLock = new Object();
     private final Map<String, Beacon> currentBeacons = new HashMap<>();

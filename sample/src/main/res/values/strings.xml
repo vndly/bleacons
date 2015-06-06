@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Test Bleacons</string>
-    <string name="image_description"/>
 
     <string name="beacon_row_mac">MAC:</string>
     <string name="beacon_row_uuid">UUID:</string>
@@ -11,7 +10,6 @@
     <string name="beacon_row_rssi">RSSI:</string>
     <string name="beacon_row_txpower">TX POWER:</string>
 
-    <string name="menu_list_beacons">List beacons</string>
     <string name="menu_mode_continuous">Mode continuous</string>
     <string name="menu_mode_window">Mode window</string>
 
