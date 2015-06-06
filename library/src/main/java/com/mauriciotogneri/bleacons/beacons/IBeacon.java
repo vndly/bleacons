@@ -63,17 +63,17 @@ public class IBeacon extends Beacon
                     int minor = getMinor(data);
                     int txPower = getTxPower(data);
 
-                    if ((this.filterUUID != null) && (!this.filterUUID.equals(uuid)))
+                    if ((filterUUID != null) && (!filterUUID.equals(uuid)))
                     {
                         return null;
                     }
 
-                    if ((this.filterMajor != null) && (this.filterMajor != major))
+                    if ((filterMajor != null) && (filterMajor != major))
                     {
                         return null;
                     }
 
-                    if ((this.filterMinor != null) && (this.filterMinor != minor))
+                    if ((filterMinor != null) && (filterMinor != minor))
                     {
                         return null;
                     }

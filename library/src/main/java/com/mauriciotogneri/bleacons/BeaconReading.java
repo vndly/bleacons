@@ -2,13 +2,13 @@ package com.mauriciotogneri.bleacons;
 
 import com.mauriciotogneri.bleacons.beacons.Beacon;
 
-public class Reading
+public class BeaconReading
 {
     public final Beacon beacon;
     public final int rssi;
     public final long timestamp; // in milliseconds
 
-    public Reading(Beacon beacon, int rssi, long timestamp)
+    public BeaconReading(Beacon beacon, int rssi, long timestamp)
     {
         this.beacon = beacon;
         this.rssi = rssi;

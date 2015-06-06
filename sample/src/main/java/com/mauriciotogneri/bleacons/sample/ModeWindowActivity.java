@@ -2,7 +2,6 @@ package com.mauriciotogneri.bleacons.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -10,7 +9,7 @@ import android.widget.Toast;
 
 import com.mauriciotogneri.bleacons.BeaconManager;
 import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
-import com.mauriciotogneri.bleacons.Reading;
+import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
 import com.mauriciotogneri.bleacons.modes.ReadingMode;
@@ -25,7 +24,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
 {
     private BeaconManager beaconManager;
     private BeaconReadingAdapter beaconReadingAdapter;
-    private final List<Reading> readingList = new ArrayList<>();
+    private final List<BeaconReading> beaconReadingsList = new ArrayList<>();
 
     private static final int MAX_CACHED_BEACONS = 100;
     private static final int SCAN_FREQUENCY = 1000; // in milliseconds
@@ -39,7 +38,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        beaconReadingAdapter = new BeaconReadingAdapter(this, readingList);
+        beaconReadingAdapter = new BeaconReadingAdapter(this, beaconReadingsList);
 
         ListView listView = (ListView) findViewById(R.id.reading_list);
         listView.setAdapter(beaconReadingAdapter);
@@ -68,7 +67,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         super.onResume();
 
-        beaconManager.resume();
+        beaconManager.start();
     }
 
     @Override
@@ -84,9 +83,10 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
-        ReadingMode mode = new ReadingModeWindow(this, new IBeacon.Filter(), MAX_CACHED_BEACONS, SCAN_FREQUENCY);
+        ReadingMode mode = new ReadingModeWindow(this, new IBeacon.Filter(), MAX_CACHED_BEACONS, SCAN_FREQUENCY, ReadingModeWindow.READING_CALCULATOR_AVERAGE);
 
         beaconManager.setMode(mode);
+        beaconManager.start();
     }
 
     @Override
@@ -96,22 +96,20 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     }
 
     @Override
-    public void onReceive(List<Reading> readings)
+    public void onReceive(List<BeaconReading> beaconReadings)
     {
-        readingList.clear();
-        readingList.addAll(readings);
+        beaconReadingsList.clear();
+        beaconReadingsList.addAll(beaconReadings);
 
-        Collections.sort(readingList, new Comparator<Reading>()
+        Collections.sort(beaconReadingsList, new Comparator<BeaconReading>()
         {
             @Override
-            public int compare(Reading lhs, Reading rhs)
+            public int compare(BeaconReading lhs, BeaconReading rhs)
             {
                 return lhs.rssi - rhs.rssi;
             }
         });
 
         beaconReadingAdapter.notifyDataSetChanged();
-
-        Log.e("TEST", "<<< RECEIVED " + readings.size());
     }
 }

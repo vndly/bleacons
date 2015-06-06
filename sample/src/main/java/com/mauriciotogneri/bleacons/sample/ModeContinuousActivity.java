@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.mauriciotogneri.bleacons.BeaconManager;
 import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
-import com.mauriciotogneri.bleacons.Reading;
+import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
 import com.mauriciotogneri.bleacons.modes.ReadingMode;
@@ -76,7 +76,7 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
     {
         super.onResume();
 
-        beaconManager.resume();
+        beaconManager.start();
     }
 
     @Override
@@ -95,6 +95,7 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
         ReadingMode mode = new ReadingModeContinuous(this, new IBeacon.Filter(), MAX_CACHED_BEACONS);
 
         beaconManager.setMode(mode);
+        beaconManager.start();
     }
 
     @Override
@@ -104,9 +105,9 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
     }
 
     @Override
-    public void onReceive(Reading reading)
+    public void onReceive(BeaconReading beaconReading)
     {
-        IBeacon iBeacon = (IBeacon) reading.beacon;
+        IBeacon iBeacon = (IBeacon) beaconReading.beacon;
 
         StringBuilder builder = new StringBuilder();
         builder.append("\n").append("\n");
@@ -114,7 +115,7 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
         builder.append("UUID:     ").append(iBeacon.uuid).append("\n");
         builder.append("Major:    ").append(iBeacon.major).append("\n");
         builder.append("Minor:    ").append(iBeacon.minor).append("\n");
-        builder.append("RSSI:     ").append(reading.rssi).append("\n");
+        builder.append("RSSI:     ").append(beaconReading.rssi).append("\n");
         builder.append("Tx power: ").append(iBeacon.txPower);
 
         readingList.append(builder.toString());

@@ -53,16 +53,16 @@ public class BeaconManager
 
     public void disconnect()
     {
-        pause();
+        stop();
 
         context.unbindService(serviceConnection);
     }
 
-    public boolean resume()
+    public boolean start()
     {
         if ((beaconService != null) && (isConnected()))
         {
-            beaconService.resume();
+            beaconService.start();
 
             return true;
         }
@@ -75,6 +75,18 @@ public class BeaconManager
         if ((beaconService != null) && (isConnected()))
         {
             beaconService.pause();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean stop()
+    {
+        if ((beaconService != null) && (isConnected()))
+        {
+            beaconService.stop();
 
             return true;
         }
@@ -97,6 +109,11 @@ public class BeaconManager
     public boolean isConnected()
     {
         return isConnected;
+    }
+
+    public boolean isScanning()
+    {
+        return beaconService.isScanning();
     }
 
     private void onConnected(IBinder service)

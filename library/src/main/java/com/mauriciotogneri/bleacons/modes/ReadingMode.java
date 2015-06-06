@@ -13,6 +13,7 @@ public abstract class ReadingMode<T>
     private final List<BeaconFilter> beaconFilters;
     private final BeaconCache beaconCache;
     private final Object beaconCacheLock = new Object();
+    protected volatile boolean isScanning = false;
 
     public ReadingMode(List<T> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity)
     {
@@ -30,6 +31,22 @@ public abstract class ReadingMode<T>
         this.beaconFilters.add(beaconFilter);
 
         this.beaconCache = new BeaconCache(maxCapacity);
+    }
+
+    public void setScanning(boolean scanning)
+    {
+        boolean startScanning = !isScanning && scanning;
+
+        isScanning = scanning;
+
+        if (startScanning)
+        {
+            onStartScanning();
+        }
+    }
+
+    protected void onStartScanning()
+    {
     }
 
     protected Beacon getBeacon(String macAddress, byte[] data)

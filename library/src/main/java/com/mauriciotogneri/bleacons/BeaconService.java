@@ -29,9 +29,20 @@ public class BeaconService extends Service implements LeScanCallback
         synchronized (readingModeLock)
         {
             readingMode = mode;
+            updateReadingMode();
+        }
+    }
+
+    public void start()
+    {
+        if ((!isScanning) && (bluetoothAdapter != null))
+        {
+            bluetoothAdapter.startLeScan(this);
         }
 
-        resume();
+        isScanning = true;
+
+        updateReadingMode();
     }
 
     public void pause()
@@ -42,32 +53,53 @@ public class BeaconService extends Service implements LeScanCallback
         }
 
         isScanning = false;
+
+        updateReadingMode();
     }
 
-    public void resume()
+    public void stop()
     {
-        if ((!isScanning) && (bluetoothAdapter != null))
-        {
-            bluetoothAdapter.startLeScan(this);
-        }
+        pause();
 
-        isScanning = true;
+        synchronized (readingModeLock)
+        {
+            readingMode = null;
+        }
+    }
+
+    public boolean isScanning()
+    {
+        return isScanning;
+    }
+
+    private void updateReadingMode()
+    {
+        synchronized (readingModeLock)
+        {
+            if (readingMode != null)
+            {
+                readingMode.setScanning(isScanning);
+            }
+        }
     }
 
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] data)
     {
-        String macAddress = device.getAddress();
-
-        synchronized (readingModeLock)
+        if (isScanning)
         {
-            if (readingMode != null)
+            String macAddress = device.getAddress();
+
+            synchronized (readingModeLock)
             {
-                readingMode.process(macAddress, rssi, data);
+                if (readingMode != null)
+                {
+                    readingMode.process(macAddress, rssi, data);
+                }
             }
         }
 
-        Log.d("BEACON SCANNED", "MAC: " + macAddress + ", RSSI: " + rssi + ", DATA LENGTH: " + Arrays.toString(data));
+        Log.d("BEACON_SCANNED", "MAC: " + device.getAddress() + ", RSSI: " + rssi + ", DATA: " + Arrays.toString(data));
     }
 
     @Override

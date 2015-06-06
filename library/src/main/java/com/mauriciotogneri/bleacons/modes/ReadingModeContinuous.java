@@ -1,7 +1,7 @@
 package com.mauriciotogneri.bleacons.modes;
 
 import com.mauriciotogneri.bleacons.BeaconFilter;
-import com.mauriciotogneri.bleacons.Reading;
+import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.beacons.Beacon;
 import com.mauriciotogneri.bleacons.modes.ReadingModeContinuous.Listener;
 
@@ -26,12 +26,12 @@ public class ReadingModeContinuous extends ReadingMode<Listener>
 
         for (Listener listener : beaconListeners)
         {
-            listener.onReceive(new Reading(beacon, rssi, timestamp));
+            listener.onReceive(new BeaconReading(beacon, rssi, timestamp));
         }
     }
 
     public interface Listener
     {
-        void onReceive(Reading readings);
+        void onReceive(BeaconReading readings);
     }
 }
