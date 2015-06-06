@@ -8,7 +8,7 @@
     android:padding="10dp">
 
     <ListView
-        android:id="@+id/beacon_list"
+        android:id="@+id/reading_list"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginBottom="5dp"

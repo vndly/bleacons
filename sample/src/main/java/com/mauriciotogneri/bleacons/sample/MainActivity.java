@@ -10,7 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
-public class TestActivity extends Activity
+public class MainActivity extends Activity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,13 +21,23 @@ public class TestActivity extends Activity
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        Button listenBeacons = (Button) findViewById(R.id.listen_beacons);
-        listenBeacons.setOnClickListener(new OnClickListener()
+        Button modeContinuous = (Button) findViewById(R.id.mode_continuous);
+        modeContinuous.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                listenBeacons();
+                modeContinuous();
+            }
+        });
+
+        Button modeWindow = (Button) findViewById(R.id.mode_window);
+        modeWindow.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                modeWindow();
             }
         });
 
@@ -44,9 +54,15 @@ public class TestActivity extends Activity
         }
     }
 
-    private void listenBeacons()
+    private void modeContinuous()
     {
-        Intent intent = new Intent(this, TestBeacons.class);
+        Intent intent = new Intent(this, ModeContinuousActivity.class);
+        startActivity(intent);
+    }
+
+    private void modeWindow()
+    {
+        Intent intent = new Intent(this, ModeWindowActivity.class);
         startActivity(intent);
     }
 }

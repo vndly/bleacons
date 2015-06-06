@@ -12,10 +12,23 @@
         android:gravity="center_horizontal">
 
         <Button
-            android:id="@+id/listen_beacons"
+            android:id="@+id/mode_continuous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/menu_listen_beacons"/>
+            android:text="@string/menu_mode_continuous"/>
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/mode_window"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_mode_window"/>
 
     </TableRow>
 

@@ -9,40 +9,40 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.mauriciotogneri.bleacons.BeaconManager;
+import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
 import com.mauriciotogneri.bleacons.Reading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
-import com.mauriciotogneri.bleacons.interfaces.BeaconListener;
-import com.mauriciotogneri.bleacons.interfaces.BeaconManagerObserver;
-import com.mauriciotogneri.bleacons.modes.ReadingModeContinuous;
-import com.mauriciotogneri.bleacons.modes.ReadingMode;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
+import com.mauriciotogneri.bleacons.modes.ReadingMode;
+import com.mauriciotogneri.bleacons.modes.ReadingModeWindow;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class TestBeacons extends Activity implements BeaconListener, BeaconManagerObserver
+public class ModeWindowActivity extends Activity implements ReadingModeWindow.Listener, BeaconManagerObserver
 {
     private BeaconManager beaconManager;
-    private BeaconAdapter beaconAdapter;
+    private BeaconReadingAdapter beaconReadingAdapter;
     private final List<Reading> readingList = new ArrayList<>();
 
+    private static final int MAX_CACHED_BEACONS = 100;
     private static final int SCAN_FREQUENCY = 1000; // in milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_listen_beacons);
+        setContentView(R.layout.activity_list_beacons);
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        beaconAdapter = new BeaconAdapter(this, readingList);
+        beaconReadingAdapter = new BeaconReadingAdapter(this, readingList);
 
-        ListView listView = (ListView) findViewById(R.id.beacon_list);
-        listView.setAdapter(beaconAdapter);
+        ListView listView = (ListView) findViewById(R.id.reading_list);
+        listView.setAdapter(beaconReadingAdapter);
 
         try
         {
@@ -84,7 +84,7 @@ public class TestBeacons extends Activity implements BeaconListener, BeaconManag
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
-        ReadingMode mode = new ReadingModeContinuous(this, new IBeacon.Filter(), 100);
+        ReadingMode mode = new ReadingModeWindow(this, new IBeacon.Filter(), MAX_CACHED_BEACONS, SCAN_FREQUENCY);
 
         beaconManager.setMode(mode);
     }
@@ -110,7 +110,7 @@ public class TestBeacons extends Activity implements BeaconListener, BeaconManag
             }
         });
 
-        beaconAdapter.notifyDataSetChanged();
+        beaconReadingAdapter.notifyDataSetChanged();
 
         Log.e("TEST", "<<< RECEIVED " + readings.size());
     }

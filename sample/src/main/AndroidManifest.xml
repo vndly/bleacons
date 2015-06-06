@@ -14,7 +14,7 @@
         android:theme="@style/app_theme">
 
         <activity
-            android:name=".TestActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
@@ -27,7 +27,13 @@
         </activity>
 
         <activity
-            android:name=".TestBeacons"
+            android:name=".ModeWindowActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".ModeContinuousActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"/>

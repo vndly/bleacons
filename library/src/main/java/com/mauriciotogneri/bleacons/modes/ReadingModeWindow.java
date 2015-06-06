@@ -1,27 +1,29 @@
 package com.mauriciotogneri.bleacons.modes;
 
-import com.mauriciotogneri.bleacons.beacons.Beacon;
 import com.mauriciotogneri.bleacons.BeaconFilter;
-import com.mauriciotogneri.bleacons.interfaces.BeaconListener;
+import com.mauriciotogneri.bleacons.Reading;
+import com.mauriciotogneri.bleacons.beacons.Beacon;
+import com.mauriciotogneri.bleacons.modes.ReadingModeWindow.Listener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReadingModeWindow extends ReadingMode
+public class ReadingModeWindow extends ReadingMode<Listener>
 {
     private int scanFrequency;
     private final Object currentBeaconsLock = new Object();
     private final Map<String, Beacon> currentBeacons = new HashMap<>();
 
-    public ReadingModeWindow(List<BeaconListener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency)
+    public ReadingModeWindow(List<Listener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency)
     {
         super(beaconListeners, beaconFilters, maxCapacity);
 
         this.scanFrequency = scanFrequency;
     }
 
-    public ReadingModeWindow(BeaconListener beaconListener, BeaconFilter beaconFilter, int maxCapacity, int scanFrequency)
+    public ReadingModeWindow(Listener beaconListener, BeaconFilter beaconFilter, int maxCapacity, int scanFrequency)
     {
         super(beaconListener, beaconFilter, maxCapacity);
 
@@ -52,5 +54,19 @@ public class ReadingModeWindow extends ReadingMode
         //                listener.onReceive(beaconsList);
         //            }
         //        }
+
+        List<Reading> readings = new ArrayList<>();
+
+        List<Listener> beaconListeners = getBeaconListeners();
+
+        for (Listener listener : beaconListeners)
+        {
+            listener.onReceive(readings);
+        }
+    }
+
+    public interface Listener
+    {
+        void onReceive(List<Reading> readings);
     }
 }

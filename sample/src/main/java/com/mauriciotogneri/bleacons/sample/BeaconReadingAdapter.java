@@ -12,11 +12,11 @@ import com.mauriciotogneri.bleacons.beacons.IBeacon;
 
 import java.util.List;
 
-public class BeaconAdapter extends ArrayAdapter<Reading>
+public class BeaconReadingAdapter extends ArrayAdapter<Reading>
 {
     private final LayoutInflater inflater;
 
-    public BeaconAdapter(Context context, List<Reading> list)
+    public BeaconReadingAdapter(Context context, List<Reading> list)
     {
         super(context, R.layout.beacon_row, list);
 

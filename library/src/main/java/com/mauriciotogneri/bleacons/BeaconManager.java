@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.IBinder;
 
 import com.mauriciotogneri.bleacons.BeaconService.BeaconBinder;
-import com.mauriciotogneri.bleacons.interfaces.BeaconManagerObserver;
 import com.mauriciotogneri.bleacons.modes.ReadingMode;
 
 public class BeaconManager
@@ -54,6 +53,8 @@ public class BeaconManager
 
     public void disconnect()
     {
+        pause();
+
         context.unbindService(serviceConnection);
     }
 
@@ -113,5 +114,12 @@ public class BeaconManager
         isConnected = false;
 
         beaconManagerObserver.onDisconnected();
+    }
+
+    public interface BeaconManagerObserver
+    {
+        void onConnected();
+
+        void onDisconnected();
     }
 }
