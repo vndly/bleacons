@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Test Bleacons</string>
+    <string name="image_description"/>
+
+    <string name="beacon_row_mac">MAC:</string>
+    <string name="beacon_row_uuid">UUID:</string>
+    <string name="beacon_row_major">MAJOR:</string>
+    <string name="beacon_row_minor">MINOR:</string>
+    <string name="beacon_row_rssi">RSSI:</string>
+    <string name="beacon_row_txpower">TX POWER:</string>
+
+    <string name="menu_listen_beacons">Listen beacons</string>
+
+</resources>
