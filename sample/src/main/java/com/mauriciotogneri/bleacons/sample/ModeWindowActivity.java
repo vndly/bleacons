@@ -12,7 +12,6 @@ import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
 import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
-import com.mauriciotogneri.bleacons.modes.ReadingMode;
 import com.mauriciotogneri.bleacons.modes.ReadingModeWindow;
 
 import java.util.ArrayList;
@@ -83,9 +82,11 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
-        ReadingMode mode = new ReadingModeWindow(this, new IBeacon.Filter(), MAX_CACHED_BEACONS, SCAN_FREQUENCY, ReadingModeWindow.READING_CALCULATOR_AVERAGE);
+        ReadingModeWindow.Builder builder = new ReadingModeWindow.Builder(MAX_CACHED_BEACONS, SCAN_FREQUENCY, ReadingModeWindow.READING_CALCULATOR_AVERAGE);
+        builder.addListeners(this);
+        builder.addFilters(new IBeacon.Filter());
 
-        beaconManager.setMode(mode);
+        beaconManager.setMode(builder.build());
         beaconManager.start();
     }
 

@@ -8,6 +8,7 @@ import com.mauriciotogneri.bleacons.beacons.Beacon;
 import com.mauriciotogneri.bleacons.modes.ReadingModeWindow.Listener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,17 +27,9 @@ public class ReadingModeWindow extends ReadingMode<Listener>
     public static final ReadingCalculator READING_CALCULATOR_LAST = new ReadingCalculatorLast();
     public static final ReadingCalculator READING_CALCULATOR_AVERAGE = new ReadingCalculatorAverage();
 
-    public ReadingModeWindow(List<Listener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency, ReadingCalculator readingCalculator)
+    private ReadingModeWindow(List<Listener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity, int scanFrequency, ReadingCalculator readingCalculator)
     {
         super(beaconListeners, beaconFilters, maxCapacity);
-
-        this.scanFrequency = scanFrequency;
-        this.readingCalculator = readingCalculator;
-    }
-
-    public ReadingModeWindow(Listener beaconListener, BeaconFilter beaconFilter, int maxCapacity, int scanFrequency, ReadingCalculator readingCalculator)
-    {
-        super(beaconListener, beaconFilter, maxCapacity);
 
         this.scanFrequency = scanFrequency;
         this.readingCalculator = readingCalculator;
@@ -116,6 +109,41 @@ public class ReadingModeWindow extends ReadingMode<Listener>
                 List<BeaconReading> readings = currentReadings.get(beacon.macAddress);
                 readings.add(new BeaconReading(storedBeacon, rssi, timestamp));
             }
+        }
+    }
+
+    public static class Builder
+    {
+        private final int maxCapacity;
+        private final int scanFrequency;
+        private final ReadingCalculator readingCalculator;
+        private final List<Listener> beaconListeners = new ArrayList<>();
+        private final List<BeaconFilter> beaconFilters = new ArrayList<>();
+
+        public Builder(int maxCapacity, int scanFrequency, ReadingCalculator readingCalculator)
+        {
+            this.maxCapacity = maxCapacity;
+            this.scanFrequency = scanFrequency;
+            this.readingCalculator = readingCalculator;
+        }
+
+        public Builder addListeners(Listener... listeners)
+        {
+            beaconListeners.addAll(Arrays.asList(listeners));
+
+            return this;
+        }
+
+        public Builder addFilters(BeaconFilter... filters)
+        {
+            beaconFilters.addAll(Arrays.asList(filters));
+
+            return this;
+        }
+
+        public ReadingModeWindow build()
+        {
+            return new ReadingModeWindow(beaconListeners, beaconFilters, maxCapacity, scanFrequency, readingCalculator);
         }
     }
 

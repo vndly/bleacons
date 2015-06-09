@@ -88,13 +88,11 @@ public class BeaconService extends Service implements LeScanCallback
     {
         if (isScanning)
         {
-            String macAddress = device.getAddress();
-
             synchronized (readingModeLock)
             {
                 if (readingMode != null)
                 {
-                    readingMode.process(macAddress, rssi, data);
+                    readingMode.process(device.getAddress(), rssi, data);
                 }
             }
         }

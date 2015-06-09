@@ -17,7 +17,6 @@ import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
 import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
-import com.mauriciotogneri.bleacons.modes.ReadingMode;
 import com.mauriciotogneri.bleacons.modes.ReadingModeContinuous;
 
 public class ModeContinuousActivity extends Activity implements ReadingModeContinuous.Listener, BeaconManagerObserver
@@ -92,9 +91,11 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
-        ReadingMode mode = new ReadingModeContinuous(this, new IBeacon.Filter(), MAX_CACHED_BEACONS);
+        ReadingModeContinuous.Builder builder = new ReadingModeContinuous.Builder(MAX_CACHED_BEACONS);
+        builder.addListeners(this);
+        builder.addFilters(new IBeacon.Filter());
 
-        beaconManager.setMode(mode);
+        beaconManager.setMode(builder.build());
         beaconManager.start();
     }
 
