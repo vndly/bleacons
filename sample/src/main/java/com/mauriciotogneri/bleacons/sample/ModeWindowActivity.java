@@ -2,7 +2,6 @@ package com.mauriciotogneri.bleacons.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,10 +31,9 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_beacons);
+        setContentView(R.layout.activity_mode_window);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         beaconReadingAdapter = new BeaconReadingAdapter(this, beaconReadingsList);
 
@@ -107,7 +105,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
             @Override
             public int compare(BeaconReading lhs, BeaconReading rhs)
             {
-                return lhs.rssi - rhs.rssi;
+                return rhs.rssi - lhs.rssi;
             }
         });
 

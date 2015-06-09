@@ -3,7 +3,6 @@ package com.mauriciotogneri.bleacons.sample;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -34,8 +33,7 @@ public class ModeContinuousActivity extends Activity implements ReadingModeConti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mode_cotinuous);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         readingList = (TextView) findViewById(R.id.reading_list);
         scrollView = (ScrollView) findViewById(R.id.scroll_view);
