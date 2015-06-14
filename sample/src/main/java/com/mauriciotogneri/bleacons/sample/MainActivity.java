@@ -9,6 +9,9 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 
+/**
+ * Application's main activity. It presents the main menu to open the two other activities.
+ */
 public class MainActivity extends Activity
 {
     @Override

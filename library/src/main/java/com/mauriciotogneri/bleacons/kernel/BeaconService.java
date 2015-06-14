@@ -1,4 +1,4 @@
-package com.mauriciotogneri.bleacons;
+package com.mauriciotogneri.bleacons.kernel;
 
 import android.annotation.TargetApi;
 import android.app.Service;

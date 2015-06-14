@@ -7,11 +7,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
+import com.mauriciotogneri.bleacons.kernel.BeaconReading;
 
 import java.util.List;
 
+/**
+ * Row adapter for the list view used in ModeWindowActivity.
+ */
 public class BeaconReadingAdapter extends ArrayAdapter<BeaconReading>
 {
     private final LayoutInflater inflater;

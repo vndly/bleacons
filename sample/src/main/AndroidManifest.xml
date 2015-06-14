@@ -38,7 +38,7 @@
             android:screenOrientation="portrait"/>
 
         <service
-            android:name="com.mauriciotogneri.bleacons.BeaconService"
+            android:name="com.mauriciotogneri.bleacons.kernel.BeaconService"
             android:enabled="true"
             android:exported="false"/>
 

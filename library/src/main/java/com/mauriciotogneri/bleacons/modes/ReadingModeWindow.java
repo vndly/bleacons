@@ -2,18 +2,21 @@ package com.mauriciotogneri.bleacons.modes;
 
 import android.os.Handler;
 
-import com.mauriciotogneri.bleacons.BeaconFilter;
-import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.beacons.Beacon;
+import com.mauriciotogneri.bleacons.beacons.BeaconFilter;
+import com.mauriciotogneri.bleacons.kernel.BeaconReading;
 import com.mauriciotogneri.bleacons.modes.ReadingModeWindow.Listener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements a window based reading mode. It keeps internally the subsequents readings of the same
+ * beacon and process them before informing the listeners.
+ */
 public class ReadingModeWindow extends ReadingMode<Listener>
 {
     private final int scanFrequency;
@@ -42,7 +45,7 @@ public class ReadingModeWindow extends ReadingMode<Listener>
 
     private void openWindow()
     {
-        if (isScanning)
+        if (isScanning())
         {
             handler.postDelayed(new Runnable()
             {
@@ -58,7 +61,7 @@ public class ReadingModeWindow extends ReadingMode<Listener>
 
     private void closeWindow()
     {
-        if (isScanning)
+        if (isScanning())
         {
             List<BeaconReading> beaconReadings = new ArrayList<>();
 
@@ -89,7 +92,7 @@ public class ReadingModeWindow extends ReadingMode<Listener>
     }
 
     @Override
-    public void processBeacon(Beacon beacon, int rssi, long timestamp)
+    public void processReading(Beacon beacon, int rssi, long timestamp)
     {
         synchronized (mapsLock)
         {
@@ -112,52 +115,68 @@ public class ReadingModeWindow extends ReadingMode<Listener>
         }
     }
 
-    public static class Builder
+    /**
+     * Builds a new instance of ReadingModeWindow.
+     */
+    public static class Builder extends BaseBuilder<Listener>
     {
-        private final int maxCapacity;
         private final int scanFrequency;
         private final ReadingCalculator readingCalculator;
-        private final List<Listener> beaconListeners = new ArrayList<>();
-        private final List<BeaconFilter> beaconFilters = new ArrayList<>();
 
+        /**
+         * Constructs the builder.
+         *
+         * @param maxCapacity       the maximum capacity of cached beacons (zero for infinite capacity)
+         * @param scanFrequency     the scan frequency (in milliseconds)
+         * @param readingCalculator the reading calculator used to process the readings
+         */
         public Builder(int maxCapacity, int scanFrequency, ReadingCalculator readingCalculator)
         {
-            this.maxCapacity = maxCapacity;
+            super(maxCapacity);
+
             this.scanFrequency = scanFrequency;
             this.readingCalculator = readingCalculator;
         }
 
-        public Builder addListeners(Listener... listeners)
-        {
-            beaconListeners.addAll(Arrays.asList(listeners));
-
-            return this;
-        }
-
-        public Builder addFilters(BeaconFilter... filters)
-        {
-            beaconFilters.addAll(Arrays.asList(filters));
-
-            return this;
-        }
-
+        /**
+         * Returns the reading mode instantiated.
+         *
+         * @return the reading mode instantiated
+         */
         public ReadingModeWindow build()
         {
             return new ReadingModeWindow(beaconListeners, beaconFilters, maxCapacity, scanFrequency, readingCalculator);
         }
     }
 
+    /**
+     * Listens for new beacons readings.
+     */
     public interface Listener
     {
-        void onReceive(List<BeaconReading> beaconReadings);
+        /**
+         * Called when a window is closed.
+         *
+         * @param readings the list of beacon readings
+         */
+        void onReceive(List<BeaconReading> readings);
     }
 
-    public static abstract class ReadingCalculator
+    /**
+     * Interface to implement for a specific reading calculator.
+     */
+    public interface ReadingCalculator
     {
-        public abstract BeaconReading calculate(List<BeaconReading> readings);
+        /**
+         * Returns a BeaconReading from the given list.
+         *
+         * @param readings the list of beacon readings
+         * @return the calculated BeaconReading
+         */
+        BeaconReading calculate(List<BeaconReading> readings);
     }
 
-    public static class ReadingCalculatorFirst extends ReadingCalculator
+    private static class ReadingCalculatorFirst implements ReadingCalculator
     {
         @Override
         public BeaconReading calculate(List<BeaconReading> readings)
@@ -166,7 +185,7 @@ public class ReadingModeWindow extends ReadingMode<Listener>
         }
     }
 
-    public static class ReadingCalculatorLast extends ReadingCalculator
+    private static class ReadingCalculatorLast implements ReadingCalculator
     {
         @Override
         public BeaconReading calculate(List<BeaconReading> readings)
@@ -175,7 +194,7 @@ public class ReadingModeWindow extends ReadingMode<Listener>
         }
     }
 
-    public static class ReadingCalculatorAverage extends ReadingCalculator
+    private static class ReadingCalculatorAverage implements ReadingCalculator
     {
         @Override
         public BeaconReading calculate(List<BeaconReading> readings)

@@ -1,14 +1,16 @@
 package com.mauriciotogneri.bleacons.modes;
 
-import com.mauriciotogneri.bleacons.BeaconFilter;
-import com.mauriciotogneri.bleacons.BeaconReading;
 import com.mauriciotogneri.bleacons.beacons.Beacon;
+import com.mauriciotogneri.bleacons.beacons.BeaconFilter;
+import com.mauriciotogneri.bleacons.kernel.BeaconReading;
 import com.mauriciotogneri.bleacons.modes.ReadingModeContinuous.Listener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Implements a continuous reading mode. It informs the listeners immediately after receiving a
+ * signal.
+ */
 public class ReadingModeContinuous extends ReadingMode<Listener>
 {
     private ReadingModeContinuous(List<Listener> beaconListeners, List<BeaconFilter> beaconFilters, int maxCapacity)
@@ -17,7 +19,7 @@ public class ReadingModeContinuous extends ReadingMode<Listener>
     }
 
     @Override
-    public void processBeacon(Beacon beacon, int rssi, long timestamp)
+    public void processReading(Beacon beacon, int rssi, long timestamp)
     {
         List<Listener> beaconListeners = getBeaconListeners();
 
@@ -29,39 +31,42 @@ public class ReadingModeContinuous extends ReadingMode<Listener>
         }
     }
 
-    public static class Builder
+    /**
+     * Builds a new instance of ReadingModeContinuous.
+     */
+    public static class Builder extends BaseBuilder<Listener>
     {
-        private final int maxCapacity;
-        private final List<Listener> beaconListeners = new ArrayList<>();
-        private final List<BeaconFilter> beaconFilters = new ArrayList<>();
-
+        /**
+         * Constructs the builder.
+         *
+         * @param maxCapacity the maximum capacity of cached beacons (zero for infinite capacity)
+         */
         public Builder(int maxCapacity)
         {
-            this.maxCapacity = maxCapacity;
+            super(maxCapacity);
         }
 
-        public Builder addListeners(Listener... listeners)
-        {
-            beaconListeners.addAll(Arrays.asList(listeners));
-
-            return this;
-        }
-
-        public Builder addFilters(BeaconFilter... filters)
-        {
-            beaconFilters.addAll(Arrays.asList(filters));
-
-            return this;
-        }
-
+        /**
+         * Returns the reading mode instantiated.
+         *
+         * @return the reading mode instantiated
+         */
         public ReadingModeContinuous build()
         {
             return new ReadingModeContinuous(beaconListeners, beaconFilters, maxCapacity);
         }
     }
 
+    /**
+     * Listens for new beacons readings.
+     */
     public interface Listener
     {
-        void onReceive(BeaconReading readings);
+        /**
+         * Called when a new beacon reading is ready.
+         *
+         * @param reading the beacon reading
+         */
+        void onReceive(BeaconReading reading);
     }
 }

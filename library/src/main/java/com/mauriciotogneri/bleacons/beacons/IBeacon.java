@@ -1,16 +1,42 @@
 package com.mauriciotogneri.bleacons.beacons;
 
-import com.mauriciotogneri.bleacons.BeaconFilter;
-
 import java.util.Arrays;
 
+/**
+ * Represents an iBeacon (https://developer.apple.com/ibeacon). The class includes a filter that can
+ * detect this type of beacon.
+ */
 public class IBeacon extends Beacon
 {
+    /**
+     * The beacon's UUID.
+     */
     public final String uuid;
+
+    /**
+     * The beacon's major value.
+     */
     public final int major;
+
+    /**
+     * The beacon's minor value.
+     */
     public final int minor;
+
+    /**
+     * The beacon's transmission power (in db).
+     */
     public final int txPower;
 
+    /**
+     * Constructs an IBeacon.
+     *
+     * @param macAddress the MAC address
+     * @param uuid       the UUID
+     * @param major      the major value
+     * @param minor      the minor value
+     * @param txPower    the transmission power (in db)
+     */
     public IBeacon(String macAddress, String uuid, int major, int minor, int txPower)
     {
         super(macAddress);
@@ -21,6 +47,9 @@ public class IBeacon extends Beacon
         this.txPower = txPower;
     }
 
+    /**
+     * A filter capable to detect AltBeacon packages type.
+     */
     public static class Filter extends BeaconFilter<IBeacon>
     {
         private final String filterUUID;
@@ -37,6 +66,13 @@ public class IBeacon extends Beacon
         private static final byte HEADER_7 = BeaconFilter.toByte("02");
         private static final byte HEADER_8 = BeaconFilter.toByte("15");
 
+        /**
+         * Filters the beacons according the the given parameters.
+         *
+         * @param filterUUID  the UUID to filter (null to accept all)
+         * @param filterMajor the major to filter (null to accept all)
+         * @param filterMinor the minor to filter (null to accept all)
+         */
         public Filter(String filterUUID, Integer filterMajor, Integer filterMinor)
         {
             this.filterUUID = filterUUID;
@@ -44,6 +80,9 @@ public class IBeacon extends Beacon
             this.filterMinor = filterMinor;
         }
 
+        /**
+         * Filters all the iBeacons.
+         */
         public Filter()
         {
             this(null, null, null);
@@ -52,42 +91,38 @@ public class IBeacon extends Beacon
         @Override
         public IBeacon getBeacon(String macAddress, byte[] data)
         {
-            IBeacon result = null;
-
-            if (data.length >= 30)
+            if (isValidHeader(data))
             {
-                if (isValidHeader(data))
+                String uuid = getUUID(data);
+                int major = getMajor(data);
+                int minor = getMinor(data);
+                int txPower = getTxPower(data);
+
+                if ((filterUUID != null) && (!filterUUID.equals(uuid)))
                 {
-                    String uuid = getUUID(data);
-                    int major = getMajor(data);
-                    int minor = getMinor(data);
-                    int txPower = getTxPower(data);
-
-                    if ((filterUUID != null) && (!filterUUID.equals(uuid)))
-                    {
-                        return null;
-                    }
-
-                    if ((filterMajor != null) && (filterMajor != major))
-                    {
-                        return null;
-                    }
-
-                    if ((filterMinor != null) && (filterMinor != minor))
-                    {
-                        return null;
-                    }
-
-                    result = new IBeacon(macAddress, uuid, major, minor, txPower);
+                    return null;
                 }
+
+                if ((filterMajor != null) && (filterMajor != major))
+                {
+                    return null;
+                }
+
+                if ((filterMinor != null) && (filterMinor != minor))
+                {
+                    return null;
+                }
+
+                return new IBeacon(macAddress, uuid, major, minor, txPower);
             }
 
-            return result;
+            return null;
         }
 
         private boolean isValidHeader(byte[] data)
         {
-            return ((data[0] == Filter.HEADER_0) && // 0x02
+            return ((data.length >= 30) && //
+                    (data[0] == Filter.HEADER_0) && // 0x02
                     (data[1] == Filter.HEADER_1) && // 0x01
                     (data[2] == Filter.HEADER_2) && // 0x06
                     (data[3] == Filter.HEADER_3) && // 0x1A
@@ -102,18 +137,7 @@ public class IBeacon extends Beacon
         {
             String uuid = toHex(Arrays.copyOfRange(data, 9, 25)); // 9-24
 
-            StringBuilder builder = new StringBuilder();
-            builder.append(uuid.substring(0, 8)); // 8 bytes
-            builder.append("-");
-            builder.append(uuid.substring(8, 12)); // 4 bytes
-            builder.append("-");
-            builder.append(uuid.substring(12, 16)); // 4 bytes
-            builder.append("-");
-            builder.append(uuid.substring(16, 20)); // 4 bytes
-            builder.append("-");
-            builder.append(uuid.substring(20, 32)); // 12 bytes
-
-            return builder.toString();
+            return getFormattedUuid(uuid);
         }
 
         private int getMajor(byte[] data)

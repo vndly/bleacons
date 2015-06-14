@@ -1,10 +1,10 @@
-package com.mauriciotogneri.bleacons;
+package com.mauriciotogneri.bleacons.modes;
 
 import com.mauriciotogneri.bleacons.beacons.Beacon;
 
 import java.util.LinkedHashMap;
 
-public class BeaconCache extends LinkedHashMap<String, Beacon>
+class BeaconCache extends LinkedHashMap<String, Beacon>
 {
     private final int maxCapacity;
 
@@ -18,6 +18,6 @@ public class BeaconCache extends LinkedHashMap<String, Beacon>
     @Override
     protected boolean removeEldestEntry(Entry<String, Beacon> eldest)
     {
-        return size() > maxCapacity;
+        return (maxCapacity > 0) && (size() > maxCapacity);
     }
 }

@@ -6,11 +6,11 @@ import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.mauriciotogneri.bleacons.BeaconManager;
-import com.mauriciotogneri.bleacons.BeaconManager.BeaconManagerObserver;
-import com.mauriciotogneri.bleacons.BeaconReading;
-import com.mauriciotogneri.bleacons.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.beacons.IBeacon;
+import com.mauriciotogneri.bleacons.kernel.BeaconManager;
+import com.mauriciotogneri.bleacons.kernel.BeaconManager.BeaconManagerObserver;
+import com.mauriciotogneri.bleacons.kernel.BeaconReading;
+import com.mauriciotogneri.bleacons.kernel.UnsupportedBluetoothLeException;
 import com.mauriciotogneri.bleacons.modes.ReadingModeWindow;
 
 import java.util.ArrayList;
@@ -18,13 +18,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Activity that starts a window based reading and displays the result of each window in a listview.
+ */
 public class ModeWindowActivity extends Activity implements ReadingModeWindow.Listener, BeaconManagerObserver
 {
     private BeaconManager beaconManager;
     private BeaconReadingAdapter beaconReadingAdapter;
     private final List<BeaconReading> beaconReadingsList = new ArrayList<>();
 
+    // maximum number of beacons cached by the reading mode
     private static final int MAX_CACHED_BEACONS = 100;
+
+    // set to create windows of 1 second
     private static final int SCAN_FREQUENCY = 1000; // in milliseconds
 
     @Override
@@ -33,6 +39,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mode_window);
 
+        // keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         beaconReadingAdapter = new BeaconReadingAdapter(this, beaconReadingsList);
@@ -42,6 +49,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
 
         try
         {
+            // instantiate the beacon manager and connect to internal service
             beaconManager = new BeaconManager(this, this);
             beaconManager.connect();
         }
@@ -56,6 +64,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         super.onPause();
 
+        // pauses the readings
         beaconManager.pause();
     }
 
@@ -64,6 +73,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         super.onResume();
 
+        // resumes the readings
         beaconManager.start();
     }
 
@@ -72,6 +82,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         super.onDestroy();
 
+        // disconnects from the service
         beaconManager.disconnect();
     }
 
@@ -80,11 +91,19 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     {
         Toast.makeText(this, "Connected!", Toast.LENGTH_SHORT).show();
 
+        // creates a window reading mode
         ReadingModeWindow.Builder builder = new ReadingModeWindow.Builder(MAX_CACHED_BEACONS, SCAN_FREQUENCY, ReadingModeWindow.READING_CALCULATOR_AVERAGE);
+
+        // set this class as listener
         builder.addListeners(this);
+
+        // filter only iBeacons
         builder.addFilters(new IBeacon.Filter());
 
+        // sets the reading mode
         beaconManager.setMode(builder.build());
+
+        // starts the readings
         beaconManager.start();
     }
 
@@ -97,9 +116,11 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
     @Override
     public void onReceive(List<BeaconReading> beaconReadings)
     {
+        // clears the list and add the new readings
         beaconReadingsList.clear();
         beaconReadingsList.addAll(beaconReadings);
 
+        // sort the readings from closer to farthest
         Collections.sort(beaconReadingsList, new Comparator<BeaconReading>()
         {
             @Override
@@ -109,6 +130,7 @@ public class ModeWindowActivity extends Activity implements ReadingModeWindow.Li
             }
         });
 
+        // notify that the list has changed
         beaconReadingAdapter.notifyDataSetChanged();
     }
 }
