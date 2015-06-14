@@ -18,17 +18,19 @@ Bleacons is an **Android** library that provides a simple mechanism to listen fo
 
 ### Beacons:
 
-A beacon is a transmitter that uses Bluetooth Low Energy 4.0 to broadcast signals that can be heard by compatible devices. In the library, a beacon is represented by the class `Beacon`. Each beacon can be configured to transmit a different package and applications must be able to understand that information. The library provides two built-in beacon types: `IBeacon` and `AltBeacon`. Each class contains the all logic necessary to read the information transmitted by that type of beacon. They achieve that by implementing a specific `BeaconFilter`. A filter is a class that receives a beacons' mac address and the package (as a `byte[]`) and returns a specific beacon. You can play with those classes in order to create your own types of beacon.
+A beacon is a transmitter that uses Bluetooth Low Energy 4.0 to broadcast signals that can be heard by compatible devices. In the library, a beacon is represented by the class `Beacon`. Each beacon can be configured to transmit a different package and applications must be able to understand that information. The library provides two built-in beacon types: `IBeacon` and `AltBeacon`. Each class contains the all logic necessary to read the information transmitted by those types of beacon. They achieve that by implementing a specific `BeaconFilter`. A filter is a class that receives a beacon's MAC address and the package data (as a `byte[]`) and returns a specific beacon. You can play with those classes in order to create your own types of beacon.
 
 ### Manager:
 
 In order to handle the way that your application will receive the beacons' signals, you must interact with the class `BeaconManager`. Internally, this class will connect to an Android service where the actual reading will happen, although the user has no direct access to this service. Instead, the class `BeaconManager` offers the following API to handle the readings:
 
-* `connect`/`disconnect`: Connects and disconnects from the internal service. This operations don't start/stop the actual reading, they only tell the manager to bind/unbind to the service.
+* `connect`/`disconnect`: Connects and disconnects from the internal service. These operations don't start/stop the actual reading, they only tell the manager to bind/unbind to the service.
 
-* `start`/`pause`/`stop`: This methods change the state of the reading process. In order for this methods to make an effect, the manager has to be previously bound to the service.
+* `start`/`pause`/`stop`: This methods change the state of the reading process. In order for these methods to make an effect, the manager has to be previously bound to the service.
 
 * `setMode`: It tells the manager what reading mode to use to process the received signals from the beacons.
+
+Note: the `BeaconManager` will not turn on/off the Bluetooth on the device. It's responsibility of the application to do that.
 
 ### Reading Mode:
 
@@ -36,7 +38,7 @@ Every time the manager receives a package it redirects it to the currently activ
 
 * `ReadingModeContinuous`: This reading mode will inform immediately the application every time that it receives a package.
 
-* `ReadingModeWindow`: This reading mode is window based. It receives as a parameter the scan frequency (in milliseconds) that will be used to calculate the windows. When a window is finished, this class will compute the final reading that will apply for each beacon detected in that window. A class that computes the final reading must implement the interface `ReadingCalculator`. The library provides 3 built-in calculators:
+* `ReadingModeWindow`: This reading mode is window based. It receives as a parameter the scan frequency (in milliseconds) that will be used to calculate the windows. When a window is finished, this class will compute the final reading that will apply for each beacon detected in that window. A class that computes the final reading must implement the interface `ReadingCalculator`. The library provides three built-in calculators:
 
     * `ReadingCalculatorFirst`: It returns the first reading as a result.
 
@@ -46,11 +48,11 @@ Every time the manager receives a package it redirects it to the currently activ
 
 ### Beacon Reading:
 
-A `BeaconReading` is the result provided by a reading mode instance. It contains the beacon that has been read, the RSSI value of the reading (in db) and the timestamp when the reading took place.
+A `BeaconReading` is the result provided by a reading mode instance. It contains the beacon from where the signal has been received, the RSSI value of the reading (in db) and the timestamp when the reading took place.
 
 ## Example
 
-The project provides a sample module to help understand how to use the library. Here is a more simplified example that implements an activity that uses a windowed based reading mode to scan for beacons:
+The project provides a sample module to help understand how to use the library. Here is a more simplified example that implements an activity that uses a window based reading mode to scan for beacons:
 
 ```java
  public class Example extends Activity implements ReadingModeWindow.Listener, BeaconManagerObserver
@@ -112,28 +114,28 @@ The project provides a sample module to help understand how to use the library. 
  }
 ```
 
-In order to use the library, your application must:
+In order to use the library, your application must include in the manifest:
 
-* Include the service in the manifest:
+* The service:
 
 ```xml
  <service
      android:name="com.mauriciotogneri.bleacons.kernel.BeaconService"
-     android:enabled="true"/>
+     android:enabled="true" />
 ```
 
-* Add the following permissions:
+* The following permissions:
 
 ```xml
- <uses-permission android:name="android.permission.BLUETOOTH"/>
- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+ <uses-permission android:name="android.permission.BLUETOOTH" />
+ <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 ```
 
 ## Download
 
 ### Latest JAR:
 
-[Download](https://github.com/mauriciotogneri/trail/releases/download/v1.0.0/trail-1.0.0.jar)
+[Download]()
 
 ## License
 
