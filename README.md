@@ -135,7 +135,7 @@ In order to use the library, your application must include in the manifest:
 
 ### Latest JAR:
 
-[Download]()
+[Download](https://github.com/mauriciotogneri/bleacons/releases/download/v1.0.0/bleacons.jar)
 
 ## License
 
