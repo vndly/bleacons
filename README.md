@@ -18,7 +18,7 @@ Bleacons is an **Android** library that provides a simple mechanism to listen fo
 
 ### Beacons:
 
-A beacon is a transmitter that uses Bluetooth Low Energy 4.0 to broadcast signals that can be heard by compatible devices. In the library, a beacon is represented by the class `Beacon`. Each beacon can be configured to transmit a different package and applications must be able to understand that information. The library provides two built-in beacon types: `IBeacon` and `AltBeacon`. Each class contains the all logic necessary to read the information transmitted by those types of beacon. They achieve that by implementing a specific `BeaconFilter`. A filter is a class that receives a beacon's MAC address and the package data (as a `byte[]`) and returns a specific beacon. You can play with those classes in order to create your own types of beacon.
+A beacon is a transmitter that uses Bluetooth Low Energy 4.0 to broadcast signals that can be heard by compatible devices. In the library, a beacon is represented by the class `Beacon`. Each beacon can be configured to transmit a different package and applications must be able to understand that information. The library provides two built-in beacon types: `IBeacon` and `AltBeacon`. Each class contains the all the logic necessary to read the information transmitted by those types of beacon. They achieve that by implementing a specific `BeaconFilter`. A filter is a class that receives a beacon's MAC address and the package data (as a `byte[]`) and returns a specific beacon. You can play with those classes in order to create your own types of beacon.
 
 ### Manager:
 
